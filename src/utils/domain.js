@@ -23,13 +23,18 @@ export function nextRepeatMode(mode) {
   return 'off';
 }
 
+function activeLocale() {
+  if (typeof document !== 'undefined' && document.documentElement.lang === 'fa') return 'fa-IR';
+  return 'en-US';
+}
+
 export function formatMoney(value) {
-  return new Intl.NumberFormat('en-US').format(Number(value || 0));
+  return new Intl.NumberFormat(activeLocale()).format(Number(value || 0));
 }
 
 export function formatDate(value) {
   try {
-    return new Intl.DateTimeFormat('en-US', { dateStyle: 'medium' }).format(new Date(value));
+    return new Intl.DateTimeFormat(activeLocale(), { dateStyle: 'medium' }).format(new Date(value));
   } catch {
     return value || '-';
   }
