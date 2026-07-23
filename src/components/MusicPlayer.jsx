@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../store/AppContext';
+import { useI18n } from '../i18n/useI18n';
 import { nextRepeatMode } from '../utils/domain';
 import { canViewPremiumStats } from '../utils/permissions';
 import { ArtistNames } from './MediaCards';
@@ -14,6 +15,7 @@ function seconds(value) {
 
 export default function MusicPlayer() {
   const { tracks, albums, currentUser, player, setPlayerState, playTrack } = useApp();
+  const { t, number } = useI18n();
   const audioRef = useRef(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -73,6 +75,8 @@ export default function MusicPlayer() {
 
   if (!track) return null;
 
+  const repeatLabel = t(`Repeat: ${player.repeat}`);
+
   return (
     <>
       <audio
@@ -81,29 +85,29 @@ export default function MusicPlayer() {
         onLoadedMetadata={(e) => setDuration(e.currentTarget.duration || track.duration || 0)}
         onEnded={onEnded}
       />
-      <section className={`music-player ${player.expanded ? 'expanded-mobile' : ''}`} aria-label="Music player">
+      <section className={`music-player ${player.expanded ? 'expanded-mobile' : ''}`} aria-label={t('Music player')}>
         <div className="player-track">
           <img src={track.cover} alt="" />
           <div>
-            <strong>{track.title}</strong>
+            <strong>{t(track.title)}</strong>
             <span><ArtistNames artistIds={track.artistIds} /></span>
-            {album && <small className="player-album"><Link to={`/albums/${album.id}`}>{album.title}</Link></small>}
+            {album && <small className="player-album"><Link to={`/albums/${album.id}`}>{t(album.title)}</Link></small>}
           </div>
           <button className="mobile-expand" onClick={() => setPlayerState({ expanded: !player.expanded })}>{player.expanded ? '⌄' : '⌃'}</button>
         </div>
 
         <div className="player-center">
           <div className="player-controls" dir="ltr">
-            <button className={player.shuffle ? 'active-control' : ''} onClick={() => setPlayerState({ shuffle: !player.shuffle })} title="Shuffle" aria-label="Shuffle">⤨</button>
-            <button onClick={() => move(-1)} title="Previous" aria-label="Previous">⏮</button>
-            <button className="play-main" onClick={() => setPlayerState({ isPlaying: !player.isPlaying })} title={player.isPlaying ? 'Pause' : 'Play'} aria-label={player.isPlaying ? 'Pause' : 'Play'}>{player.isPlaying ? '❚❚' : '▶'}</button>
-            <button onClick={() => move(1)} title="Next" aria-label="Next">⏭</button>
-            <button className={player.repeat !== 'off' ? 'active-control' : ''} onClick={() => setPlayerState({ repeat: nextRepeatMode(player.repeat) })} title={`Repeat: ${player.repeat}`} aria-label={`Repeat: ${player.repeat}`}>{player.repeat === 'one' ? '↻¹' : '↻'}</button>
+            <button className={player.shuffle ? 'active-control' : ''} onClick={() => setPlayerState({ shuffle: !player.shuffle })} title={t('Shuffle')} aria-label={t('Shuffle')}>⤨</button>
+            <button onClick={() => move(-1)} title={t('Previous')} aria-label={t('Previous')}>⏮</button>
+            <button className="play-main" onClick={() => setPlayerState({ isPlaying: !player.isPlaying })} title={t(player.isPlaying ? 'Pause' : 'Play')} aria-label={t(player.isPlaying ? 'Pause' : 'Play')}>{player.isPlaying ? '❚❚' : '▶'}</button>
+            <button onClick={() => move(1)} title={t('Next')} aria-label={t('Next')}>⏭</button>
+            <button className={player.repeat !== 'off' ? 'active-control' : ''} onClick={() => setPlayerState({ repeat: nextRepeatMode(player.repeat) })} title={repeatLabel} aria-label={repeatLabel}>{player.repeat === 'one' ? '↻¹' : '↻'}</button>
           </div>
           <div className="progress-row">
             <span>{seconds(currentTime)}</span>
             <input
-              aria-label="Progress bar"
+              aria-label={t('Progress bar')}
               type="range"
               min="0"
               max={duration || track.duration || 1}
@@ -120,41 +124,41 @@ export default function MusicPlayer() {
         </div>
 
         <div className="player-extra">
-          {showStats && <span className="player-stats">{track.listenerCount.toLocaleString('en-US')} listeners · {track.streamCount.toLocaleString('en-US')} streams</span>}
-          <button onClick={() => setLyricsOpen((v) => !v)} title="Lyrics" aria-label="Lyrics">♫</button>
-          <button onClick={() => setQueueOpen((v) => !v)} title="Queue" aria-label="Queue">☷</button>
+          {showStats && <span className="player-stats">{number(track.listenerCount)} {t('listeners')} · {number(track.streamCount)} {t('streams')}</span>}
+          <button onClick={() => setLyricsOpen((v) => !v)} title={t('Lyrics')} aria-label={t('Lyrics')}>♫</button>
+          <button onClick={() => setQueueOpen((v) => !v)} title={t('Queue')} aria-label={t('Queue')}>☷</button>
           <span>🔊</span>
-          <input aria-label="Volume control" className="volume-slider" type="range" min="0" max="1" step="0.01" value={volume} onChange={(e) => setVolume(Number(e.target.value))} />
+          <input aria-label={t('Volume control')} className="volume-slider" type="range" min="0" max="1" step="0.01" value={volume} onChange={(e) => setVolume(Number(e.target.value))} />
         </div>
 
         <div className="mobile-full-info">
-          <img className="mobile-big-cover" src={track.cover} alt={`Cover for ${track.title}`} />
-          <h2>{track.title}</h2>
+          <img className="mobile-big-cover" src={track.cover} alt={t(`Cover for ${track.title}`)} />
+          <h2>{t(track.title)}</h2>
           <p><ArtistNames artistIds={track.artistIds} /></p>
-          {album && <Link to={`/albums/${album.id}`}>{album.title}</Link>}
-          {showStats && <p className="tiny-stats"><span>{track.listenerCount.toLocaleString('en-US')} listeners</span><span>{track.streamCount.toLocaleString('en-US')} streams</span></p>}
+          {album && <Link to={`/albums/${album.id}`}>{t(album.title)}</Link>}
+          {showStats && <p className="tiny-stats"><span>{number(track.listenerCount)} {t('listeners')}</span><span>{number(track.streamCount)} {t('streams')}</span></p>}
         </div>
       </section>
 
       {queueOpen && (
         <aside className="player-drawer queue-drawer">
-          <div className="drawer-head"><h3>Queue</h3><button onClick={() => setQueueOpen(false)}>×</button></div>
+          <div className="drawer-head"><h3>{t('Queue')}</h3><button onClick={() => setQueueOpen(false)}>×</button></div>
           {queue.map((item, idx) => (
             <div key={`${item.id}-${idx}`} className={`queue-item ${item.id === track.id ? 'current' : ''}`}>
               <button className="queue-play" onClick={() => playTrack(item.id, queue.map((t) => t.id))}>
-                <img src={item.cover} alt="" /><span>{item.title}</span>
+                <img src={item.cover} alt="" /><span>{t(item.title)}</span>
               </button>
-              <button className="queue-remove" aria-label={`Remove ${item.title} from queue`} onClick={() => setPlayerState({ queue: player.queue.filter((id, i) => !(id === item.id && i === idx)) })}>×</button>
+              <button className="queue-remove" aria-label={t(`Remove ${item.title} from queue`)} onClick={() => setPlayerState({ queue: player.queue.filter((id, i) => !(id === item.id && i === idx)) })}>×</button>
             </div>
           ))}
-          {queue.length > 1 && <button className="secondary-button small queue-clear" onClick={() => setPlayerState({ queue: [track.id] })}>Clear remaining queue</button>}
+          {queue.length > 1 && <button className="secondary-button small queue-clear" onClick={() => setPlayerState({ queue: [track.id] })}>{t('Clear remaining queue')}</button>}
         </aside>
       )}
 
       {lyricsOpen && (
         <aside className="player-drawer lyrics-drawer">
-          <div className="drawer-head"><h3>Lyrics</h3><button onClick={() => setLyricsOpen(false)}>×</button></div>
-          <div className="lyrics-text">{track.lyrics ? track.lyrics.split('\n').map((line, i) => <p key={i}>{line}</p>) : <p className="muted">No lyrics are available for this track.</p>}</div>
+          <div className="drawer-head"><h3>{t('Lyrics')}</h3><button onClick={() => setLyricsOpen(false)}>×</button></div>
+          <div className="lyrics-text">{track.lyrics ? track.lyrics.split('\n').map((line, i) => <p key={i}>{t(line)}</p>) : <p className="muted">{t('No lyrics are available for this track.')}</p>}</div>
         </aside>
       )}
     </>
