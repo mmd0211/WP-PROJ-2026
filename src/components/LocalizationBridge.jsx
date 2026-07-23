@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useApp } from '../store/AppContext';
 import { getTextDirection, localizeDocument, translateText } from '../i18n';
 import { localizeExtraDocument, translateExtraText } from '../i18n/extra';
+import { localizeFragments, translateFragment } from '../i18n/fragments';
 
 export default function LocalizationBridge() {
   const { settings } = useApp();
@@ -19,6 +20,7 @@ export default function LocalizationBridge() {
       frameId = null;
       localizeDocument(language, document.body);
       localizeExtraDocument(language, document.body);
+      localizeFragments(language, document.body);
     };
     const scheduleLocalization = () => {
       if (frameId !== null) return;
@@ -35,7 +37,7 @@ export default function LocalizationBridge() {
       attributeFilter: ['placeholder', 'title', 'aria-label', 'alt'],
     });
 
-    const localizeMessage = (message) => translateExtraText(translateText(String(message), language), language);
+    const localizeMessage = (message) => translateFragment(translateExtraText(translateText(String(message), language), language), language);
     const nativeAlert = window.alert.bind(window);
     const nativeConfirm = window.confirm.bind(window);
     const nativePrompt = window.prompt.bind(window);
