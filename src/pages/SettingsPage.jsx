@@ -61,9 +61,9 @@ export default function SettingsPage() {
 
       <section className="panel-card settings-section">
         <div><h2>{t('Interface Language')}</h2><p>{t('Switch the entire interface language and text direction.')}</p></div>
-        <div className="segmented language-segmented" dir="ltr">
-          <button className={language === 'fa' ? 'active' : ''} onClick={() => changeLanguage('fa')}>{t('Persian')}</button>
-          <button className={language === 'en' ? 'active' : ''} onClick={() => changeLanguage('en')}>{t('English')}</button>
+        <div className="segmented language-segmented" dir="ltr" data-no-i18n>
+          <button className={language === 'fa' ? 'active' : ''} onClick={() => changeLanguage('fa')}>فارسی</button>
+          <button className={language === 'en' ? 'active' : ''} onClick={() => changeLanguage('en')}>English</button>
         </div>
       </section>
 
