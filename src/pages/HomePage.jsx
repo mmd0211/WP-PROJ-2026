@@ -21,7 +21,7 @@ export default function HomePage() {
         <div>
           <span className="eyebrow">{t(`Hello ${displayName} 👋`)}</span>
           <h1>{t('What are you listening to today?')}</h1>
-          <p>{t('Plan:')} {t(subscriptionLabel(currentUser.subscription))} · {number(currentUser.streamsToday || 0)} {t('streams today')}</p>
+          <p>{t('Plan:')} {t(subscriptionLabel(currentUser.subscription))} · {t(`${currentUser.streamsToday || 0} streams today`)}</p>
           <Link className="primary-button inline" to="/library">{t('Discover music')}</Link>
         </div>
         <img src={currentUser.avatar || '/covers/default-avatar.svg'} alt={t('Profile photo')} />
