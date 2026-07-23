@@ -49,6 +49,14 @@ export default function SettingsPage() {
         <div className="sound-setting"><input aria-label="UI Sound" type="range" min="0" max="1" step="0.05" value={settings.uiVolume} onChange={(e) => updateSettings({ uiVolume: Number(e.target.value) })} /><span>{Math.round(settings.uiVolume * 100).toLocaleString('en-US')}%</span><button className="secondary-button" onClick={() => playTestTone(settings.uiVolume)}>Test sound</button></div>
       </section>
 
+      <section className="panel-card settings-section">
+        <div><h2>Interface Language</h2><p>Switch the entire interface language and text direction.</p></div>
+        <div className="segmented language-segmented" dir="ltr">
+          <button className={settings.language === 'fa' ? 'active' : ''} onClick={() => updateSettings({ language: 'fa' })}>Persian</button>
+          <button className={settings.language === 'en' ? 'active' : ''} onClick={() => updateSettings({ language: 'en' })}>English</button>
+        </div>
+      </section>
+
       <section className="panel-card subscription-settings">
         <div className="section-head"><div><h2>Subscription</h2><p>Current plan: <strong>{subscriptionLabel(currentUser.subscription)}</strong></p></div><span className={`pill ${currentUser.subscription}`}>{subscriptionLabel(currentUser.subscription)}</span></div>
         <div className="plan-grid">
