@@ -2,6 +2,7 @@ import React from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { useApp } from './store/AppContext';
 import Layout from './components/Layout';
+import LocalizationBridge from './components/LocalizationBridge';
 import AuthPage from './pages/AuthPage';
 import HomePage from './pages/HomePage';
 import LibraryPage from './pages/LibraryPage';
@@ -50,5 +51,10 @@ function RouteGate() {
 }
 
 export default function App() {
-  return <RouteGate />;
+  return (
+    <>
+      <LocalizationBridge />
+      <RouteGate />
+    </>
+  );
 }
