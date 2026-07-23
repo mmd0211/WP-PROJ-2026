@@ -60,4 +60,4 @@ export const demoFinance = [
 
 export const demoPrices = { silver: 149000, gold: 249000 };
 
-export const demoSettings = { notificationLimit: 10, uiVolume: 0.55 };
+export const demoSettings = { language: 'fa', notificationLimit: 10, uiVolume: 0.55 };
