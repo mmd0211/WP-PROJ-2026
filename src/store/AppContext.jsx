@@ -44,9 +44,9 @@ export function AppProvider({ children }) {
   const settings = useMemo(() => ({ ...demoSettings, ...(state.settingsByUser[state.currentUserId] || {}) }), [state.settingsByUser, state.currentUserId]);
 
   useEffect(() => {
-    document.documentElement.lang = settings.language || 'fa';
-    document.documentElement.dir = settings.language === 'en' ? 'ltr' : 'rtl';
-  }, [settings.language]);
+    document.documentElement.lang = 'en';
+    document.documentElement.dir = 'ltr';
+  }, []);
 
   const notify = useCallback((message, type = 'info') => {
     setToast({ id: Date.now(), message, type });
@@ -60,7 +60,7 @@ export function AppProvider({ children }) {
 
   const login = useCallback((email, password) => {
     const user = state.users.find((u) => u.email.toLowerCase() === String(email).trim().toLowerCase() && u.password === password);
-    if (!user) return { ok: false, message: 'ایمیل یا رمز عبور نادرست است.' };
+    if (!user) return { ok: false, message: 'Invalid email or password.' };
     setState((s) => ({ ...s, currentUserId: user.id }));
     return { ok: true, user };
   }, [state.users]);
@@ -72,7 +72,7 @@ export function AppProvider({ children }) {
 
   const registerListener = useCallback((payload) => {
     if (state.users.some((u) => u.email.toLowerCase() === payload.email.toLowerCase())) {
-      return { ok: false, message: 'این ایمیل قبلا ثبت شده است.' };
+      return { ok: false, message: 'This email is already registered.' };
     }
     const user = {
       id: `u-${Date.now()}`,
@@ -95,7 +95,7 @@ export function AppProvider({ children }) {
 
   const registerArtist = useCallback((payload) => {
     if (state.users.some((u) => u.email.toLowerCase() === payload.email.toLowerCase())) {
-      return { ok: false, message: 'این ایمیل قبلا ثبت شده است.' };
+      return { ok: false, message: 'This email is already registered.' };
     }
     const id = `artist-${Date.now()}`;
     const user = {
@@ -122,7 +122,7 @@ export function AppProvider({ children }) {
       artistRequests: [request, ...s.artistRequests],
       notifications: [
         ...s.notifications,
-        ...s.users.filter((u) => ['support', 'admin'].includes(u.role)).map((u) => ({ id: `n-${Date.now()}-${u.id}`, userId: u.id, type: 'artist-request', title: 'درخواست احراز هویت هنرمند', body: `${payload.stageName} منتظر بررسی است.`, link: '/dashboard', read: false, createdAt: new Date().toISOString() })),
+        ...s.users.filter((u) => ['support', 'admin'].includes(u.role)).map((u) => ({ id: `n-${Date.now()}-${u.id}`, userId: u.id, type: 'artist-request', title: 'Artist verification request', body: `${payload.stageName} is waiting for review.`, link: '/dashboard', read: false, createdAt: new Date().toISOString() })),
       ],
     }));
     return { ok: true, pending: true };
@@ -130,12 +130,12 @@ export function AppProvider({ children }) {
 
   const updateProfile = useCallback((userId, patch) => {
     const user = state.users.find((u) => u.id === userId);
-    if (!user) return { ok: false, message: 'کاربر پیدا نشد.' };
+    if (!user) return { ok: false, message: 'User not found.' };
     if ('avatar' in patch && !permissions.canChangeAvatar(user.subscription)) {
-      return { ok: false, message: 'تغییر عکس نمایه برای اشتراک پایه فعال نیست.' };
+      return { ok: false, message: 'Profile image changes are not available on the Basic plan.' };
     }
     setState((s) => ({ ...s, users: s.users.map((u) => u.id === userId ? { ...u, ...patch } : u) }));
-    notify('اطلاعات نمایه ذخیره شد.', 'success');
+    notify('Profile changes saved.', 'success');
     return { ok: true };
   }, [state.users, notify]);
 
@@ -156,7 +156,7 @@ export function AppProvider({ children }) {
     if (!currentUser) return { ok: false };
     const mine = state.playlists.filter((p) => p.ownerId === currentUser.id);
     if (!permissions.canCreatePlaylist(currentUser.subscription, mine.length)) {
-      return { ok: false, message: `سقف تعداد پلی‌لیست برای اشتراک ${permissions.subscriptionLabel(currentUser.subscription)} تکمیل شده است.` };
+      return { ok: false, message: `The playlist limit for the ${permissions.subscriptionLabel(currentUser.subscription)} plan has been reached.` };
     }
     const playlist = { id: `p-${Date.now()}`, ownerId: currentUser.id, name: name.trim(), trackIds: [], updatedAt: new Date().toISOString() };
     setState((s) => ({ ...s, playlists: [playlist, ...s.playlists] }));
@@ -193,7 +193,7 @@ export function AppProvider({ children }) {
   }, [currentUser]);
 
   const deleteAccount = useCallback(() => {
-    if (!currentUser || ['admin', 'support'].includes(currentUser.role)) return { ok: false, message: 'حساب‌های سیستمی از نسخه ماک حذف نمی‌شوند.' };
+    if (!currentUser || ['admin', 'support'].includes(currentUser.role)) return { ok: false, message: 'System accounts cannot be deleted from the mock application.' };
     const id = currentUser.id;
     setState((s) => ({
       ...s,
@@ -209,11 +209,11 @@ export function AppProvider({ children }) {
     const track = state.tracks.find((t) => t.id === trackId);
     if (!track || !currentUser) return { ok: false };
     if (track.earlyAccess && !permissions.canAccessEarlyRelease(currentUser.subscription)) {
-      notify('این اثر فعلا فقط برای کاربران طلایی در دسترس است.', 'warning');
+      notify('This release is currently available to Gold users only.', 'warning');
       return { ok: false };
     }
     if (!permissions.canStream(currentUser.subscription, currentUser.streamsToday || 0)) {
-      notify('سقف ۶۰ پخش روزانه اشتراک پایه تکمیل شده است.', 'warning');
+      notify('The Basic plan daily limit of 60 streams has been reached.', 'warning');
       return { ok: false };
     }
     const isNewTrack = player.currentTrackId !== trackId;
@@ -238,11 +238,11 @@ export function AppProvider({ children }) {
       const status = approved ? 'approved' : 'rejected';
       const users = s.users.map((u) => u.id === req.userId ? { ...u, status, verified: approved } : u);
       const notifications = s.users.some((u) => u.id === req.userId)
-        ? [{ id: `n-${Date.now()}`, userId: req.userId, type: 'artist-result', title: approved ? 'حساب هنرمند تایید شد' : 'درخواست هنرمند رد شد', body: approved ? 'حساب شما تایید شد و پنل مدیریت آثار فعال است.' : `علت رد: ${reason || 'نیاز به اطلاعات بیشتر'}`, link: '/studio', read: false, createdAt: new Date().toISOString() }, ...s.notifications]
+        ? [{ id: `n-${Date.now()}`, userId: req.userId, type: 'artist-result', title: approved ? 'Artist account approved' : 'Artist request rejected', body: approved ? 'Your account has been approved and Artist Studio is now available.' : `Rejection reason: ${reason || 'More information is required'}`, link: '/studio', read: false, createdAt: new Date().toISOString() }, ...s.notifications]
         : s.notifications;
       return { ...s, users, notifications, artistRequests: s.artistRequests.map((r) => r.id === requestId ? { ...r, status, reason } : r) };
     });
-    notify(approved ? `حساب ${stageName || 'هنرمند'} تایید شد.` : 'درخواست رد شد.', approved ? 'success' : 'warning');
+    notify(approved ? `Account ${stageName || 'artist'} approved.` : 'Request rejected.', approved ? 'success' : 'warning');
     return targetUserId;
   }, [currentUser, notify]);
 
@@ -252,18 +252,18 @@ export function AppProvider({ children }) {
   }, [currentUser]);
 
   const createTicket = useCallback((subject, text) => {
-    if (!currentUser || !subject.trim() || !text.trim()) return { ok: false, message: 'موضوع و متن تیکت الزامی است.' };
+    if (!currentUser || !subject.trim() || !text.trim()) return { ok: false, message: 'Ticket subject and message are required.' };
     const numeric = Math.max(1000, ...state.tickets.map((t) => Number(t.id) || 0)) + 1;
     const ticket = { id: String(numeric), userName: currentUser.displayName, subject: subject.trim(), createdAt: new Date().toISOString(), status: 'open', messages: [{ from: 'user', text: text.trim() }] };
     setState((s) => ({
       ...s,
       tickets: [ticket, ...s.tickets],
       notifications: [
-        ...s.users.filter((u) => ['support', 'admin'].includes(u.role)).map((u) => ({ id: `n-${Date.now()}-${u.id}`, userId: u.id, type: 'ticket', title: 'تیکت جدید', body: `تیکت #${numeric} از ${currentUser.displayName}: ${subject.trim()}`, link: '/dashboard', read: false, createdAt: new Date().toISOString() })),
+        ...s.users.filter((u) => ['support', 'admin'].includes(u.role)).map((u) => ({ id: `n-${Date.now()}-${u.id}`, userId: u.id, type: 'ticket', title: 'New support ticket', body: `Ticket #${numeric} from ${currentUser.displayName}: ${subject.trim()}`, link: '/dashboard', read: false, createdAt: new Date().toISOString() })),
         ...s.notifications,
       ],
     }));
-    notify('تیکت پشتیبانی ثبت شد.', 'success');
+    notify('Support ticket created.', 'success');
     return { ok: true, ticket };
   }, [currentUser, state.tickets, notify]);
 
@@ -275,11 +275,11 @@ export function AppProvider({ children }) {
   const updatePrices = useCallback((prices) => {
     if (!currentUser || !permissions.isAdmin(currentUser.role)) return;
     setState((s) => ({ ...s, prices: { silver: Number(prices.silver), gold: Number(prices.gold) } }));
-    notify('قیمت اشتراک‌ها بروزرسانی شد.', 'success');
+    notify('Subscription prices updated.', 'success');
   }, [currentUser, notify]);
 
   const publishTrack = useCallback((payload) => {
-    if (!permissions.canUseArtistStudio(currentUser)) return { ok: false, message: 'حساب هنرمند هنوز تایید نشده است.' };
+    if (!permissions.canUseArtistStudio(currentUser)) return { ok: false, message: 'The artist account has not been approved yet.' };
     const now = Date.now();
     let albumId = payload.albumId || null;
     let newAlbum = null;
@@ -304,7 +304,7 @@ export function AppProvider({ children }) {
       income: 0,
     };
     setState((s) => ({ ...s, tracks: [track, ...s.tracks], albums: newAlbum ? [newAlbum, ...s.albums] : s.albums }));
-    notify('اثر جدید در داده‌های ماک منتشر شد.', 'success');
+    notify('The new release was published to the mock catalog.', 'success');
     return { ok: true, track };
   }, [currentUser, notify]);
 
@@ -322,7 +322,7 @@ export function AppProvider({ children }) {
     clearPersistedState();
     setState(createInitialState());
     setPlayer({ currentTrackId: null, queue: [], isPlaying: false, repeat: 'off', shuffle: false, expanded: false });
-    notify('داده‌های دمو به حالت اولیه برگشت.', 'success');
+    notify('Demo data was reset to its initial state.', 'success');
   }, [notify]);
 
   const value = useMemo(() => ({

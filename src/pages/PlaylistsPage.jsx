@@ -17,18 +17,18 @@ export default function PlaylistsPage() {
     const result = createPlaylist(name);
     if (!result.ok) return notify(result.message, 'warning');
     setName('');
-    notify('پلی‌لیست ساخته شد.', 'success');
+    notify('Playlist created.', 'success');
   };
 
   return (
     <div className="page-stack">
       <div className="page-title action-title">
-        <div><span className="eyebrow">کتابخانه شخصی</span><h1>پلی‌لیست‌ها</h1><p>اشتراک {subscriptionLabel(currentUser.subscription)} · {mine.length.toLocaleString('fa-IR')} از {Number.isFinite(limit) ? limit.toLocaleString('fa-IR') : '∞'} پلی‌لیست</p></div>
-        <form className="inline-create" onSubmit={submit}><input placeholder="نام پلی‌لیست جدید" value={name} onChange={(e) => setName(e.target.value)} /><button className="primary-button">ایجاد</button></form>
+        <div><span className="eyebrow">Your Library</span><h1>Playlists</h1><p>Plan: {subscriptionLabel(currentUser.subscription)} · {mine.length.toLocaleString('en-US')} of {Number.isFinite(limit) ? limit.toLocaleString('en-US') : '∞'} playlists</p></div>
+        <form className="inline-create" onSubmit={submit}><input placeholder="New playlist name" value={name} onChange={(e) => setName(e.target.value)} /><button className="primary-button">Create</button></form>
       </div>
 
       {!mine.length ? (
-        <EmptyState icon="☷" title="هنوز پلی‌لیستی ندارید" text="اولین پلی‌لیست خود را بسازید و از آرشیو آهنگ اضافه کنید." action={<button className="primary-button" onClick={() => document.querySelector('.inline-create input')?.focus()}>ایجاد اولین پلی‌لیست</button>} />
+        <EmptyState icon="☷" title="No playlists yet" text="Create your first playlist and add tracks from the library." action={<button className="primary-button" onClick={() => document.querySelector('.inline-create input')?.focus()}>Create first playlist</button>} />
       ) : (
         <div className="playlist-page-list">
           {mine.map((playlist) => {
@@ -36,10 +36,10 @@ export default function PlaylistsPage() {
             return (
               <section key={playlist.id} className="panel-card playlist-panel">
                 <div className="playlist-panel-head">
-                  <div><span className="eyebrow">{playlistTracks.length.toLocaleString('fa-IR')} آهنگ</span><h2>{playlist.name}</h2></div>
-                  <div className="button-row"><button className="secondary-button small" onClick={() => { const next = window.prompt('نام جدید پلی‌لیست:', playlist.name); if (next?.trim()) renamePlaylist(playlist.id, next); }}>تغییر نام</button><Link className="secondary-button small" to="/library">افزودن آهنگ</Link><button className="danger-button small" onClick={() => window.confirm(`پلی‌لیست «${playlist.name}» حذف شود؟`) && deletePlaylist(playlist.id)}>حذف</button></div>
+                  <div><span className="eyebrow">{playlistTracks.length.toLocaleString('en-US')} tracks</span><h2>{playlist.name}</h2></div>
+                  <div className="button-row"><button className="secondary-button small" onClick={() => { const next = window.prompt('New playlist name:', playlist.name); if (next?.trim()) renamePlaylist(playlist.id, next); }}>Rename</button><Link className="secondary-button small" to="/library">Add tracks</Link><button className="danger-button small" onClick={() => window.confirm(`Delete playlist “${playlist.name}”?`) && deletePlaylist(playlist.id)}>Delete</button></div>
                 </div>
-                {playlistTracks.length ? <div className="track-list">{playlistTracks.map((track) => <TrackCard key={track.id} track={track} queueIds={playlistTracks.map((t) => t.id)} compact />)}</div> : <div className="mini-empty"><span>♪</span><p>این پلی‌لیست خالی است.</p><Link to="/library">رفتن به آرشیو و افزودن آهنگ</Link></div>}
+                {playlistTracks.length ? <div className="track-list">{playlistTracks.map((track) => <TrackCard key={track.id} track={track} queueIds={playlistTracks.map((t) => t.id)} compact />)}</div> : <div className="mini-empty"><span>♪</span><p>This playlist is empty.</p><Link to="/library">Browse library and add tracks</Link></div>}
               </section>
             );
           })}

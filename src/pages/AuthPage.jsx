@@ -36,9 +36,9 @@ export default function AuthPage() {
 
   const submitListener = (e) => {
     e.preventDefault();
-    if (listener.password.length < 6) return setError('رمز عبور باید حداقل ۶ کاراکتر باشد.');
-    if (listener.password !== listener.confirm) return setError('رمز عبور و تایید آن یکسان نیستند.');
-    if (!listener.privacy) return setError('پذیرش سیاست حریم خصوصی الزامی است.');
+    if (listener.password.length < 6) return setError('Password must be at least 6 characters long.');
+    if (listener.password !== listener.confirm) return setError('Password and confirmation do not match.');
+    if (!listener.privacy) return setError('You must accept the privacy policy.');
     const result = registerListener(listener);
     if (!result.ok) return setError(result.message);
     setError('');
@@ -47,8 +47,8 @@ export default function AuthPage() {
 
   const submitArtist = (e) => {
     e.preventDefault();
-    if (artist.password.length < 6) return setError('رمز عبور باید حداقل ۶ کاراکتر باشد.');
-    if (!artist.samples.trim()) return setError('لینک یا توضیح نمونه‌کار الزامی است.');
+    if (artist.password.length < 6) return setError('Password must be at least 6 characters long.');
+    if (!artist.samples.trim()) return setError('A portfolio link or description is required.');
     const result = registerArtist(artist);
     if (!result.ok) return setError(result.message);
     setError('');
@@ -61,87 +61,87 @@ export default function AuthPage() {
       <div className="auth-art">
         <div className="auth-logo"><span>♪</span> Spotune</div>
         <div className="vinyl"><div /></div>
-        <h1>موسیقی، نزدیک‌تر از همیشه.</h1>
-        <p>نسخه ماک فاز اول؛ چهار نقش کاربری، سه سطح اشتراک، پخش‌کننده کامل و داشبوردهای اختصاصی.</p>
+        <h1>Music, closer than ever.</h1>
+        <p>Phase 1 frontend mock with four user roles, three subscription tiers, a complete player, and role-specific dashboards.</p>
       </div>
 
       <div className="auth-panel">
         <div className="auth-tabs">
-          <button className={mode === 'login' ? 'active' : ''} onClick={() => { setMode('login'); setError(''); }}>ورود</button>
-          <button className={mode === 'signup' ? 'active' : ''} onClick={() => { setMode('signup'); setError(''); }}>ثبت‌نام</button>
+          <button className={mode === 'login' ? 'active' : ''} onClick={() => { setMode('login'); setError(''); }}>Login</button>
+          <button className={mode === 'signup' ? 'active' : ''} onClick={() => { setMode('signup'); setError(''); }}>Sign up</button>
         </div>
 
         {mode === 'login' ? (
           <>
-            <div className="auth-title"><h2>خوش آمدید</h2><p>با هر یک از نقش‌های دمو وارد شوید.</p></div>
+            <div className="auth-title"><h2>Welcome</h2><p>Sign in with any demo role.</p></div>
             <form onSubmit={submitLogin} className="form-stack">
-              <label>ایمیل<input type="email" required value={loginData.email} onChange={(e) => setLoginData((v) => ({ ...v, email: e.target.value }))} /></label>
-              <label>رمز عبور<input type="password" required value={loginData.password} onChange={(e) => setLoginData((v) => ({ ...v, password: e.target.value }))} /></label>
-              <button type="button" className="text-button align-start" onClick={() => setForgotOpen(true)}>رمز عبور را فراموش کرده‌ام</button>
+              <label>Email<input type="email" required value={loginData.email} onChange={(e) => setLoginData((v) => ({ ...v, email: e.target.value }))} /></label>
+              <label>Password<input type="password" required value={loginData.password} onChange={(e) => setLoginData((v) => ({ ...v, password: e.target.value }))} /></label>
+              <button type="button" className="text-button align-start" onClick={() => setForgotOpen(true)}>Forgot password</button>
               {error && <div className="form-error">{error}</div>}
-              <button className="primary-button" type="submit">ورود به Spotune</button>
+              <button className="primary-button" type="submit">Sign in to Spotune</button>
             </form>
             <div className="demo-box">
-              <strong>حساب‌های دمو</strong>
+              <strong>Demo accounts</strong>
               <div className="demo-grid">
                 {[
-                  ['شنونده پایه', 'sara@example.com'],
-                  ['شنونده نقره‌ای', 'mina@example.com'],
-                  ['شنونده طلایی', 'gold@example.com'],
-                  ['هنرمند تاییدشده', 'nima@artist.com'],
-                  ['پشتیبان', 'support@example.com'],
-                  ['مدیر', 'admin@example.com'],
+                  ['Basic listener', 'sara@example.com'],
+                  ['Silver listener', 'mina@example.com'],
+                  ['Gold listener', 'gold@example.com'],
+                  ['Verified artist', 'nima@artist.com'],
+                  ['Support', 'support@example.com'],
+                  ['Admin', 'admin@example.com'],
                 ].map(([label, email]) => <button key={email} onClick={() => setLoginData({ email, password: '123456' })}><span>{label}</span><small>{email}</small></button>)}
               </div>
-              <small>رمز همه حساب‌های دمو: 123456</small>
+              <small>Password for all demo accounts: 123456</small>
             </div>
           </>
         ) : (
           <>
             <div className="signup-type">
-              <button className={signupType === 'listener' ? 'active' : ''} onClick={() => setSignupType('listener')}>کاربر عادی</button>
-              <button className={signupType === 'artist' ? 'active' : ''} onClick={() => setSignupType('artist')}>هنرمند</button>
+              <button className={signupType === 'listener' ? 'active' : ''} onClick={() => setSignupType('listener')}>Listener</button>
+              <button className={signupType === 'artist' ? 'active' : ''} onClick={() => setSignupType('artist')}>Artist</button>
             </div>
 
             {signupType === 'listener' ? (
               <form onSubmit={submitListener} className="form-stack">
-                <label>نام نمایشی<input required value={listener.displayName} onChange={(e) => setListener((v) => ({ ...v, displayName: e.target.value }))} /></label>
-                <label>ایمیل<input type="email" required value={listener.email} onChange={(e) => setListener((v) => ({ ...v, email: e.target.value }))} /></label>
-                <div className="form-two"><label>رمز عبور<input type="password" required value={listener.password} onChange={(e) => setListener((v) => ({ ...v, password: e.target.value }))} /></label><label>تایید رمز<input type="password" required value={listener.confirm} onChange={(e) => setListener((v) => ({ ...v, confirm: e.target.value }))} /></label></div>
-                <div className="form-two"><label>تاریخ تولد<input type="date" required value={listener.birthDate} onChange={(e) => setListener((v) => ({ ...v, birthDate: e.target.value }))} /></label><label>جنسیت<select value={listener.gender} onChange={(e) => setListener((v) => ({ ...v, gender: e.target.value }))}><option value="female">زن</option><option value="male">مرد</option><option value="other">سایر/ترجیح می‌دهم نگویم</option></select></label></div>
-                <label className="checkbox-line"><input type="checkbox" checked={listener.privacy} onChange={(e) => setListener((v) => ({ ...v, privacy: e.target.checked }))} /><span>با <button type="button" className="inline-link" onClick={() => setPrivacyOpen(true)}>سیاست حریم خصوصی</button> موافقم.</span></label>
+                <label>Display name<input required value={listener.displayName} onChange={(e) => setListener((v) => ({ ...v, displayName: e.target.value }))} /></label>
+                <label>Email<input type="email" required value={listener.email} onChange={(e) => setListener((v) => ({ ...v, email: e.target.value }))} /></label>
+                <div className="form-two"><label>Password<input type="password" required value={listener.password} onChange={(e) => setListener((v) => ({ ...v, password: e.target.value }))} /></label><label>Confirm password<input type="password" required value={listener.confirm} onChange={(e) => setListener((v) => ({ ...v, confirm: e.target.value }))} /></label></div>
+                <div className="form-two"><label>Birth date<input type="date" required value={listener.birthDate} onChange={(e) => setListener((v) => ({ ...v, birthDate: e.target.value }))} /></label><label>Gender<select value={listener.gender} onChange={(e) => setListener((v) => ({ ...v, gender: e.target.value }))}><option value="female">Female</option><option value="male">Male</option><option value="other">Other / Prefer not to say</option></select></label></div>
+                <label className="checkbox-line"><input type="checkbox" checked={listener.privacy} onChange={(e) => setListener((v) => ({ ...v, privacy: e.target.checked }))} /><span>I agree to the <button type="button" className="inline-link" onClick={() => setPrivacyOpen(true)}>Privacy Policy</button>.</span></label>
                 {error && <div className="form-error">{error}</div>}
-                <button className="primary-button" type="submit">ساخت حساب شنونده</button>
+                <button className="primary-button" type="submit">Create listener account</button>
               </form>
             ) : (
               <form onSubmit={submitArtist} className="form-stack">
-                <label>نام هنری<input required value={artist.stageName} onChange={(e) => setArtist((v) => ({ ...v, stageName: e.target.value }))} /></label>
-                <label>ایمیل<input type="email" required value={artist.email} onChange={(e) => setArtist((v) => ({ ...v, email: e.target.value }))} /></label>
-                <label>رمز عبور<input type="password" required value={artist.password} onChange={(e) => setArtist((v) => ({ ...v, password: e.target.value }))} /></label>
-                <label>نمونه‌کارها<textarea required rows="4" placeholder="لینک SoundCloud/GitHub/Drive یا توضیح نمونه‌کار" value={artist.samples} onChange={(e) => setArtist((v) => ({ ...v, samples: e.target.value }))} /></label>
-                <p className="info-note">پس از ارسال درخواست، حساب در وضعیت «در انتظار تأیید» قرار می‌گیرد و پشتیبان/مدیر آن را بررسی می‌کند.</p>
+                <label>Stage name<input required value={artist.stageName} onChange={(e) => setArtist((v) => ({ ...v, stageName: e.target.value }))} /></label>
+                <label>Email<input type="email" required value={artist.email} onChange={(e) => setArtist((v) => ({ ...v, email: e.target.value }))} /></label>
+                <label>Password<input type="password" required value={artist.password} onChange={(e) => setArtist((v) => ({ ...v, password: e.target.value }))} /></label>
+                <label>Portfolio<textarea required rows="4" placeholder="SoundCloud/GitHub/Drive link or portfolio description" value={artist.samples} onChange={(e) => setArtist((v) => ({ ...v, samples: e.target.value }))} /></label>
+                <p className="info-note">After submission, the account enters Pending Review and a support agent or admin can review it.</p>
                 {error && <div className="form-error">{error}</div>}
-                <button className="primary-button" type="submit">ارسال درخواست هنرمندی</button>
+                <button className="primary-button" type="submit">Submit artist request</button>
               </form>
             )}
           </>
         )}
       </div>
 
-      <Modal open={privacyOpen} title="سیاست حریم خصوصی" onClose={() => setPrivacyOpen(false)}>
-        <div className="prose"><p>این پروژه یک نسخه ماک آموزشی است. اطلاعات واردشده فقط در Local Storage مرورگر نگهداری می‌شوند و به سروری ارسال نمی‌شوند.</p><p>در نسخه واقعی فاز دوم، نگهداری رمز عبور، اطلاعات حساب و رسانه‌ها باید از طریق بک‌اند امن و سیاست‌های دسترسی مناسب انجام شود.</p><p>با ثبت‌نام، کاربر با ذخیره تنظیمات، اطلاعات نمایه و تاریخچه تعاملات مورد نیاز برای عملکرد سامانه موافقت می‌کند.</p></div>
+      <Modal open={privacyOpen} title="Privacy Policy" onClose={() => setPrivacyOpen(false)}>
+        <div className="prose"><p>This is an educational frontend mock. Entered data is stored only in the browser Local Storage and is not sent to a server.</p><p>In Phase 2, passwords, account data, and media must be handled by a secure backend with proper access controls.</p><p>By registering, the user consents to storing the settings, profile information, and interaction history required by the application.</p></div>
       </Modal>
 
-      <Modal open={forgotOpen} title="بازیابی حساب" onClose={() => setForgotOpen(false)}>
-        <form className="form-stack" onSubmit={(e) => { e.preventDefault(); setForgotOpen(false); alert('در نسخه ماک، لینک بازیابی شبیه‌سازی شد.'); }}>
-          <label>ایمیل حساب<input type="email" required placeholder="name@example.com" /></label>
-          <p className="info-note">در فاز اول ارسال ایمیل شبیه‌سازی می‌شود؛ اتصال واقعی در بک‌اند انجام خواهد شد.</p>
-          <button className="primary-button">ارسال لینک بازیابی</button>
+      <Modal open={forgotOpen} title="Account recovery" onClose={() => setForgotOpen(false)}>
+        <form className="form-stack" onSubmit={(e) => { e.preventDefault(); setForgotOpen(false); alert('A recovery link was simulated in the mock application.'); }}>
+          <label>Account email<input type="email" required placeholder="name@example.com" /></label>
+          <p className="info-note">Email delivery is mocked in Phase 1 and will be implemented by the backend in Phase 2.</p>
+          <button className="primary-button">Send recovery link</button>
         </form>
       </Modal>
 
-      <Modal open={pendingOpen} title="درخواست ثبت شد" onClose={() => { setPendingOpen(false); setMode('login'); }}>
-        <div className="center-message"><div className="success-mark">✓</div><p>درخواست حساب هنرمند با موفقیت ثبت شد و اکنون «در انتظار تأیید» است.</p><button className="primary-button" onClick={() => { setPendingOpen(false); setMode('login'); }}>بازگشت به ورود</button></div>
+      <Modal open={pendingOpen} title="Request submitted" onClose={() => { setPendingOpen(false); setMode('login'); }}>
+        <div className="center-message"><div className="success-mark">✓</div><p>The artist account request was submitted successfully and is now pending review.</p><button className="primary-button" onClick={() => { setPendingOpen(false); setMode('login'); }}>Back to login</button></div>
       </Modal>
     </div>
   );

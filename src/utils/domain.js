@@ -5,11 +5,11 @@ export function sortCatalog(items, mode = 'listeners') {
 }
 
 export function filterCatalog(items, query, artistNameFor) {
-  const needle = String(query || '').trim().toLocaleLowerCase('fa');
+  const needle = String(query || '').trim().toLocaleLowerCase('en-US');
   if (!needle) return items;
   return items.filter((item) => {
     const artistNames = (item.artistIds || [item.artistId]).map(artistNameFor).join(' ');
-    return `${item.title} ${artistNames}`.toLocaleLowerCase('fa').includes(needle);
+    return `${item.title} ${artistNames}`.toLocaleLowerCase('en-US').includes(needle);
   });
 }
 
@@ -24,12 +24,12 @@ export function nextRepeatMode(mode) {
 }
 
 export function formatMoney(value) {
-  return new Intl.NumberFormat('fa-IR').format(Number(value || 0));
+  return new Intl.NumberFormat('en-US').format(Number(value || 0));
 }
 
 export function formatDate(value) {
   try {
-    return new Intl.DateTimeFormat('fa-IR', { dateStyle: 'medium' }).format(new Date(value));
+    return new Intl.DateTimeFormat('en-US', { dateStyle: 'medium' }).format(new Date(value));
   } catch {
     return value || '-';
   }

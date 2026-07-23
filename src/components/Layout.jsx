@@ -4,20 +4,12 @@ import { useApp } from '../store/AppContext';
 import { isBackoffice, canUseArtistStudio } from '../utils/permissions';
 import MusicPlayer from './MusicPlayer';
 
-const copy = {
-  fa: {
-    home: 'خانه', library: 'آلبوم‌ها و تک‌آهنگ‌ها', playlists: 'پلی‌لیست‌ها', profile: 'نمایه من', settings: 'تنظیمات', notifications: 'اعلانات', studio: 'مدیریت آثار', dashboard: 'داشبورد مدیریت', logout: 'خروج', search: 'جستجو در موسیقی…',
-  },
-  en: {
-    home: 'Home', library: 'Music library', playlists: 'Playlists', profile: 'My profile', settings: 'Settings', notifications: 'Notifications', studio: 'Artist studio', dashboard: 'Backoffice', logout: 'Logout', search: 'Search music…',
-  },
-};
+const copy = { home: 'Home', library: 'Music Library', playlists: 'Playlists', profile: 'My Profile', settings: 'Settings', notifications: 'Notifications', studio: 'Artist Studio', dashboard: 'Backoffice', logout: 'Logout', search: 'Search music…' };
 
 export default function Layout() {
-  const { currentUser, notifications, logout, settings, toast } = useApp();
+  const { currentUser, notifications, logout, toast } = useApp();
   const [mobileNav, setMobileNav] = useState(false);
-  const lang = settings.language === 'en' ? 'en' : 'fa';
-  const t = copy[lang];
+  const t = copy;
   const unread = notifications.filter((n) => n.userId === currentUser?.id && !n.read).length;
   const links = useMemo(() => {
     const base = [
@@ -42,7 +34,7 @@ export default function Layout() {
         <nav>
           {links.map(([to, label, icon]) => (
             <NavLink key={to} to={to} end={to === '/'} onClick={() => setMobileNav(false)}>
-              <span>{icon}</span><span>{label}</span>{to === '/notifications' && unread > 0 && <b className="nav-badge">{unread.toLocaleString('fa-IR')}</b>}
+              <span>{icon}</span><span>{label}</span>{to === '/notifications' && unread > 0 && <b className="nav-badge">{unread.toLocaleString('en-US')}</b>}
             </NavLink>
           ))}
         </nav>
@@ -53,7 +45,7 @@ export default function Layout() {
         </div>
       </aside>
 
-      {mobileNav && <button aria-label="بستن منو" className="mobile-overlay" onClick={() => setMobileNav(false)} />}
+      {mobileNav && <button aria-label="Close menu" className="mobile-overlay" onClick={() => setMobileNav(false)} />}
 
       <div className="app-main">
         <header className="topbar">

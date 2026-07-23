@@ -10,7 +10,7 @@ export default function ArtistProfilePage() {
   const artist = users.find((u) => u.id === id && u.role === 'artist');
   const [editingBio, setEditingBio] = useState(false);
   const [bio, setBio] = useState(artist?.bio || '');
-  if (!artist) return <div className="empty-state"><h2>هنرمند پیدا نشد.</h2><Link to="/library">بازگشت</Link></div>;
+  if (!artist) return <div className="empty-state"><h2>Artist not found.</h2><Link to="/library">Back</Link></div>;
   const artistAlbums = albums.filter((a) => a.artistId === artist.id);
   const artistTracks = tracks.filter((t) => t.artistIds.includes(artist.id));
   const following = currentUser.following?.includes(artist.id);
@@ -22,18 +22,18 @@ export default function ArtistProfilePage() {
   return (
     <div className="page-stack">
       <section className="artist-hero">
-        <img src={artist.avatar || '/covers/default-avatar.svg'} alt={`تصویر ${artist.displayName}`} />
-        <div className="artist-hero-copy"><span className="eyebrow">هنرمند</span><h1>{artist.stageName || artist.displayName} {artist.verified && <span className="verified" title="هنرمند تایید شده">✓</span>}</h1><p>{artist.bio || 'این هنرمند هنوز بیوگرافی ثبت نکرده است.'}</p><div className="profile-pills"><span className="pill">{artist.followers.length.toLocaleString('fa-IR')} دنبال‌کننده</span><span className={`pill ${artist.status === 'approved' ? 'success' : ''}`}>{artist.status === 'approved' ? 'تاییدشده' : 'در انتظار تایید'}</span></div></div>
-        <div className="profile-actions">{own ? <button className="secondary-button" onClick={() => setEditingBio((v) => !v)}>ویرایش بیوگرافی</button> : <button className={following ? 'secondary-button' : 'primary-button'} onClick={() => toggleFollow(artist.id)}>{following ? 'لغو دنبال‌کردن' : 'دنبال‌کردن هنرمند'}</button>}</div>
+        <img src={artist.avatar || '/covers/default-avatar.svg'} alt={`Image of ${artist.displayName}`} />
+        <div className="artist-hero-copy"><span className="eyebrow">Artist</span><h1>{artist.stageName || artist.displayName} {artist.verified && <span className="verified" title="Verified artist">✓</span>}</h1><p>{artist.bio || 'This artist has not added a biography yet.'}</p><div className="profile-pills"><span className="pill">{artist.followers.length.toLocaleString('en-US')} followers</span><span className={`pill ${artist.status === 'approved' ? 'success' : ''}`}>{artist.status === 'approved' ? 'Approved' : 'Pending approval'}</span></div></div>
+        <div className="profile-actions">{own ? <button className="secondary-button" onClick={() => setEditingBio((v) => !v)}>Edit biography</button> : <button className={following ? 'secondary-button' : 'primary-button'} onClick={() => toggleFollow(artist.id)}>{following ? 'Unfollow' : 'Follow artist'}</button>}</div>
       </section>
 
-      {editingBio && own && <form className="panel-card form-stack" onSubmit={(e) => { e.preventDefault(); updateProfile(artist.id, { bio }); setEditingBio(false); }}><label>بیوگرافی<textarea rows="4" value={bio} onChange={(e) => setBio(e.target.value)} /></label><button className="primary-button">ذخیره بیوگرافی</button></form>}
+      {editingBio && own && <form className="panel-card form-stack" onSubmit={(e) => { e.preventDefault(); updateProfile(artist.id, { bio }); setEditingBio(false); }}><label>Biography<textarea rows="4" value={bio} onChange={(e) => setBio(e.target.value)} /></label><button className="primary-button">Save biography</button></form>}
 
-      {showStats && <div className="stat-grid three premium-stats"><div className="stat-card"><span>مجموع شنوندگان آثار</span><strong>{totalListeners.toLocaleString('fa-IR')}</strong></div><div className="stat-card"><span>مجموع استریم‌ها</span><strong>{totalStreams.toLocaleString('fa-IR')}</strong></div><div className="stat-card"><span>تعداد آثار</span><strong>{artistTracks.length.toLocaleString('fa-IR')}</strong></div></div>}
-      {!showStats && <div className="warning-note">مشاهده آمار کلی شنوندگان و استریم‌ها ویژه کاربران اشتراک طلایی است.</div>}
+      {showStats && <div className="stat-grid three premium-stats"><div className="stat-card"><span>Total release listeners</span><strong>{totalListeners.toLocaleString('en-US')}</strong></div><div className="stat-card"><span>Total streams</span><strong>{totalStreams.toLocaleString('en-US')}</strong></div><div className="stat-card"><span>Releases</span><strong>{artistTracks.length.toLocaleString('en-US')}</strong></div></div>}
+      {!showStats && <div className="warning-note">Aggregate listener and stream statistics are available to Gold users only.</div>}
 
-      <section className="section-block"><div className="section-head"><h2>آلبوم‌ها</h2></div>{artistAlbums.length ? <div className="album-grid">{artistAlbums.map((a) => <AlbumCard key={a.id} album={a} />)}</div> : <p className="muted">هنوز آلبومی منتشر نشده است.</p>}</section>
-      <section className="section-block"><div className="section-head"><h2>تک‌آهنگ‌ها و ترک‌ها</h2></div><div className="track-list">{artistTracks.map((t) => <TrackCard key={t.id} track={t} queueIds={artistTracks.map((x) => x.id)} />)}</div></section>
+      <section className="section-block"><div className="section-head"><h2>Albums</h2></div>{artistAlbums.length ? <div className="album-grid">{artistAlbums.map((a) => <AlbumCard key={a.id} album={a} />)}</div> : <p className="muted">No albums have been published yet.</p>}</section>
+      <section className="section-block"><div className="section-head"><h2>Singles and Tracks</h2></div><div className="track-list">{artistTracks.map((t) => <TrackCard key={t.id} track={t} queueIds={artistTracks.map((x) => x.id)} />)}</div></section>
     </div>
   );
 }

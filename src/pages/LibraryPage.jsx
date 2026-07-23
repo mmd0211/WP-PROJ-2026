@@ -28,15 +28,15 @@ export default function LibraryPage() {
 
   return (
     <div className="page-stack">
-      <div className="page-title"><div><span className="eyebrow">آرشیو موسیقی</span><h1>آلبوم‌ها و تک‌آهنگ‌ها</h1><p>همزمان بر اساس نام اثر یا هنرمند جستجو کنید.</p></div></div>
+      <div className="page-title"><div><span className="eyebrow">Music Library</span><h1>Albums and Singles</h1><p>Search by release or artist name.</p></div></div>
       <form className="catalog-toolbar" onSubmit={submit}>
-        <label className="search-box"><span>⌕</span><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="نام اثر یا هنرمند…" /></label>
-        <select value={sort} onChange={(e) => setSort(e.target.value)} aria-label="مرتب‌سازی"><option value="listeners">بیشترین شنونده</option><option value="date">جدیدترین انتشار</option></select>
-        <div className="segmented"><button type="button" className={type === 'all' ? 'active' : ''} onClick={() => setType('all')}>همه</button><button type="button" className={type === 'album' ? 'active' : ''} onClick={() => setType('album')}>آلبوم</button><button type="button" className={type === 'track' ? 'active' : ''} onClick={() => setType('track')}>آهنگ</button></div>
+        <label className="search-box"><span>⌕</span><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Release or artist name…" /></label>
+        <select value={sort} onChange={(e) => setSort(e.target.value)} aria-label="Sort"><option value="listeners">Most listeners</option><option value="date">Newest releases</option></select>
+        <div className="segmented"><button type="button" className={type === 'all' ? 'active' : ''} onClick={() => setType('all')}>All</button><button type="button" className={type === 'album' ? 'active' : ''} onClick={() => setType('album')}>Album</button><button type="button" className={type === 'track' ? 'active' : ''} onClick={() => setType('track')}>Track</button></div>
       </form>
 
-      {(type === 'all' || type === 'album') && <section className="section-block"><div className="section-head"><h2>آلبوم‌ها</h2><span>{filteredAlbums.length.toLocaleString('fa-IR')} نتیجه</span></div><div className="album-grid">{filteredAlbums.map((album) => <AlbumCard key={album.id} album={album} />)}</div></section>}
-      {(type === 'all' || type === 'track') && <section className="section-block"><div className="section-head"><h2>تک‌آهنگ‌ها و ترک‌ها</h2><span>{filteredTracks.length.toLocaleString('fa-IR')} نتیجه</span></div><div className="track-list">{filteredTracks.map((track) => <TrackCard key={track.id} track={track} queueIds={filteredTracks.map((t) => t.id)} />)}</div></section>}
+      {(type === 'all' || type === 'album') && <section className="section-block"><div className="section-head"><h2>Albums</h2><span>{filteredAlbums.length.toLocaleString('en-US')} results</span></div><div className="album-grid">{filteredAlbums.map((album) => <AlbumCard key={album.id} album={album} />)}</div></section>}
+      {(type === 'all' || type === 'track') && <section className="section-block"><div className="section-head"><h2>Singles and Tracks</h2><span>{filteredTracks.length.toLocaleString('en-US')} results</span></div><div className="track-list">{filteredTracks.map((track) => <TrackCard key={track.id} track={track} queueIds={filteredTracks.map((t) => t.id)} />)}</div></section>}
     </div>
   );
 }

@@ -33,10 +33,10 @@ describe('catalog domain helpers', () => {
   });
 
   it('creates a usable username from a display name', () => {
-    expect(safeUsername('علی رضایی')).toMatch(/^علی_رضایی_\d{3}$/u);
+    expect(safeUsername('Alex Morgan')).toMatch(/^alex_morgan_\d{3}$/u);
   });
 
-  it('formats monetary values for Persian locale', () => {
-    expect(formatMoney(149000)).toContain('۱۴۹');
+  it('formats monetary values for English locale', () => {
+    expect(formatMoney(149000)).toContain('149');
   });
 });

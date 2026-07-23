@@ -12,19 +12,19 @@ export default function NotificationsPage() {
 
   return (
     <div className="page-stack">
-      <div className="page-title action-title"><div><span className="eyebrow">مرکز اعلان‌ها</span><h1>اعلانات</h1><p>{unreadCount.toLocaleString('fa-IR')} اعلان خوانده‌نشده</p></div>{mine.length > 0 && <button className="secondary-button" onClick={markAllNotifications}>خواندن همه اعلانات</button>}</div>
-      {!visible.length ? <EmptyState icon="🔔" title="اعلانی ندارید" text="وقتی اثری منتشر شود، اشتراک رو به پایان باشد یا رویداد مربوط به نقش شما رخ دهد، اینجا نمایش داده می‌شود." /> : (
+      <div className="page-title action-title"><div><span className="eyebrow">Notification Center</span><h1>Notifications</h1><p>{unreadCount.toLocaleString('en-US')} unread notifications</p></div>{mine.length > 0 && <button className="secondary-button" onClick={markAllNotifications}>Mark all as read</button>}</div>
+      {!visible.length ? <EmptyState icon="🔔" title="No notifications" text="New releases, subscription reminders, and role-related events will appear here." /> : (
         <div className="notification-list">
           {visible.map((n) => (
             <article key={n.id} className={`notification-card ${!n.read ? 'unread' : ''}`}>
               <div className="notification-icon">{n.type === 'release' ? '♫' : n.type === 'subscription' ? '◈' : n.type === 'finance' ? '⌁' : n.type === 'ticket' ? '✉' : '✓'}</div>
-              <div className="notification-copy"><div className="notification-title-row"><h3>{n.title}</h3>{!n.read && <span className="unread-dot" />}</div><p>{n.body}</p><small>{formatDate(n.createdAt)}</small>{n.link && <Link to={n.link} onClick={() => markNotification(n.id, true)}>مشاهده جزئیات ←</Link>}</div>
-              <div className="notification-actions">{!n.read && <button className="secondary-button small" onClick={() => markNotification(n.id, true)}>خوانده شد</button>}<button className="icon-button danger-text" onClick={() => deleteNotification(n.id)} title="حذف اعلان">⌫</button></div>
+              <div className="notification-copy"><div className="notification-title-row"><h3>{n.title}</h3>{!n.read && <span className="unread-dot" />}</div><p>{n.body}</p><small>{formatDate(n.createdAt)}</small>{n.link && <Link to={n.link} onClick={() => markNotification(n.id, true)}>View details →</Link>}</div>
+              <div className="notification-actions">{!n.read && <button className="secondary-button small" onClick={() => markNotification(n.id, true)}>Mark as read</button>}<button className="icon-button danger-text" onClick={() => deleteNotification(n.id)} title="Delete notification">⌫</button></div>
             </article>
           ))}
         </div>
       )}
-      {visible.length < mine.length && <p className="muted centered">به علت محدودیت تنظیم‌شده، فقط {visible.length.toLocaleString('fa-IR')} اعلان اول نمایش داده می‌شود.</p>}
+      {visible.length < mine.length && <p className="muted centered">Because of your notification limit, only the first {visible.length.toLocaleString('en-US')} notifications are shown.</p>}
     </div>
   );
 }

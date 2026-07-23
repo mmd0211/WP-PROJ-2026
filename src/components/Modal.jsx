@@ -14,7 +14,7 @@ export default function Modal({ open, title, children, onClose, wide = false }) 
       <section className={`modal-card ${wide ? 'modal-wide' : ''}`} role="dialog" aria-modal="true" aria-label={title}>
         <div className="modal-head">
           <h2>{title}</h2>
-          <button className="icon-button" onClick={onClose} aria-label="بستن">×</button>
+          <button className="icon-button" onClick={onClose} aria-label="Close">×</button>
         </div>
         <div className="modal-body">{children}</div>
       </section>

@@ -81,7 +81,7 @@ export default function MusicPlayer() {
         onLoadedMetadata={(e) => setDuration(e.currentTarget.duration || track.duration || 0)}
         onEnded={onEnded}
       />
-      <section className={`music-player ${player.expanded ? 'expanded-mobile' : ''}`} aria-label="پخش کننده موسیقی">
+      <section className={`music-player ${player.expanded ? 'expanded-mobile' : ''}`} aria-label="Music player">
         <div className="player-track">
           <img src={track.cover} alt="" />
           <div>
@@ -94,16 +94,16 @@ export default function MusicPlayer() {
 
         <div className="player-center">
           <div className="player-controls">
-            <button className={player.shuffle ? 'active-control' : ''} onClick={() => setPlayerState({ shuffle: !player.shuffle })} title="پخش تصادفی">⤨</button>
-            <button onClick={() => move(-1)} title="قبلی">⏮</button>
-            <button className="play-main" onClick={() => setPlayerState({ isPlaying: !player.isPlaying })} title={player.isPlaying ? 'توقف' : 'پخش'}>{player.isPlaying ? '❚❚' : '▶'}</button>
-            <button onClick={() => move(1)} title="بعدی">⏭</button>
-            <button className={player.repeat !== 'off' ? 'active-control' : ''} onClick={() => setPlayerState({ repeat: nextRepeatMode(player.repeat) })} title={`تکرار: ${player.repeat}`}>{player.repeat === 'one' ? '↻¹' : '↻'}</button>
+            <button className={player.shuffle ? 'active-control' : ''} onClick={() => setPlayerState({ shuffle: !player.shuffle })} title="Shuffle">⤨</button>
+            <button onClick={() => move(-1)} title="Previous">⏮</button>
+            <button className="play-main" onClick={() => setPlayerState({ isPlaying: !player.isPlaying })} title={player.isPlaying ? 'Pause' : 'Play'}>{player.isPlaying ? '❚❚' : '▶'}</button>
+            <button onClick={() => move(1)} title="Next">⏭</button>
+            <button className={player.repeat !== 'off' ? 'active-control' : ''} onClick={() => setPlayerState({ repeat: nextRepeatMode(player.repeat) })} title={`Repeat: ${player.repeat}`}>{player.repeat === 'one' ? '↻¹' : '↻'}</button>
           </div>
           <div className="progress-row">
             <span>{seconds(currentTime)}</span>
             <input
-              aria-label="نوار پیشرفت"
+              aria-label="Progress bar"
               type="range"
               min="0"
               max={duration || track.duration || 1}
@@ -120,41 +120,41 @@ export default function MusicPlayer() {
         </div>
 
         <div className="player-extra">
-          {showStats && <span className="player-stats">{track.listenerCount.toLocaleString('fa-IR')} شنونده · {track.streamCount.toLocaleString('fa-IR')} استریم</span>}
-          <button onClick={() => setLyricsOpen((v) => !v)} title="متن آهنگ">♫</button>
-          <button onClick={() => setQueueOpen((v) => !v)} title="صف پخش">☷</button>
+          {showStats && <span className="player-stats">{track.listenerCount.toLocaleString('en-US')} listeners · {track.streamCount.toLocaleString('en-US')} streams</span>}
+          <button onClick={() => setLyricsOpen((v) => !v)} title="Lyrics">♫</button>
+          <button onClick={() => setQueueOpen((v) => !v)} title="Queue">☷</button>
           <span>🔊</span>
-          <input aria-label="کنترل صدا" className="volume-slider" type="range" min="0" max="1" step="0.01" value={volume} onChange={(e) => setVolume(Number(e.target.value))} />
+          <input aria-label="Volume control" className="volume-slider" type="range" min="0" max="1" step="0.01" value={volume} onChange={(e) => setVolume(Number(e.target.value))} />
         </div>
 
         <div className="mobile-full-info">
-          <img className="mobile-big-cover" src={track.cover} alt={`کاور ${track.title}`} />
+          <img className="mobile-big-cover" src={track.cover} alt={`Cover for ${track.title}`} />
           <h2>{track.title}</h2>
           <p><ArtistNames artistIds={track.artistIds} /></p>
           {album && <Link to={`/albums/${album.id}`}>{album.title}</Link>}
-          {showStats && <p className="tiny-stats"><span>{track.listenerCount.toLocaleString('fa-IR')} شنونده</span><span>{track.streamCount.toLocaleString('fa-IR')} استریم</span></p>}
+          {showStats && <p className="tiny-stats"><span>{track.listenerCount.toLocaleString('en-US')} listeners</span><span>{track.streamCount.toLocaleString('en-US')} streams</span></p>}
         </div>
       </section>
 
       {queueOpen && (
         <aside className="player-drawer queue-drawer">
-          <div className="drawer-head"><h3>صف پخش</h3><button onClick={() => setQueueOpen(false)}>×</button></div>
+          <div className="drawer-head"><h3>Queue</h3><button onClick={() => setQueueOpen(false)}>×</button></div>
           {queue.map((item, idx) => (
             <div key={`${item.id}-${idx}`} className={`queue-item ${item.id === track.id ? 'current' : ''}`}>
               <button className="queue-play" onClick={() => playTrack(item.id, queue.map((t) => t.id))}>
                 <img src={item.cover} alt="" /><span>{item.title}</span>
               </button>
-              <button className="queue-remove" aria-label={`حذف ${item.title} از صف`} onClick={() => setPlayerState({ queue: player.queue.filter((id, i) => !(id === item.id && i === idx)) })}>×</button>
+              <button className="queue-remove" aria-label={`Remove ${item.title} from queue`} onClick={() => setPlayerState({ queue: player.queue.filter((id, i) => !(id === item.id && i === idx)) })}>×</button>
             </div>
           ))}
-          {queue.length > 1 && <button className="secondary-button small queue-clear" onClick={() => setPlayerState({ queue: [track.id] })}>پاک کردن بقیه صف</button>}
+          {queue.length > 1 && <button className="secondary-button small queue-clear" onClick={() => setPlayerState({ queue: [track.id] })}>Clear remaining queue</button>}
         </aside>
       )}
 
       {lyricsOpen && (
         <aside className="player-drawer lyrics-drawer">
-          <div className="drawer-head"><h3>متن آهنگ</h3><button onClick={() => setLyricsOpen(false)}>×</button></div>
-          <div className="lyrics-text">{track.lyrics ? track.lyrics.split('\n').map((line, i) => <p key={i}>{line}</p>) : <p className="muted">برای این آهنگ متنی ثبت نشده است.</p>}</div>
+          <div className="drawer-head"><h3>Lyrics</h3><button onClick={() => setLyricsOpen(false)}>×</button></div>
+          <div className="lyrics-text">{track.lyrics ? track.lyrics.split('\n').map((line, i) => <p key={i}>{line}</p>) : <p className="muted">No lyrics are available for this track.</p>}</div>
         </aside>
       )}
     </>

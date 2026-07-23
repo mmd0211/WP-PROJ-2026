@@ -1,153 +1,151 @@
 # WP-PROJ-2026 — Spotune
 
-پیاده‌سازی فاز اول پروژه درس **برنامه‌سازی وب** دانشگاه صنعتی شریف؛ یک سرویس استریم موسیقی شبیه Spotify با رابط کاربری نقش‌محور برای شنونده، هنرمند، پشتیبان و مدیر سامانه.
+Spotune is the Phase 1 frontend implementation for the Web Programming course project. It is a Spotify-like music streaming application built as a fully interactive mock frontend with role-based experiences for listeners, artists, support agents, and the system administrator.
 
-> وضعیت فعلی مخزن: **Phase 1 — Frontend Mock**. در این فاز بک‌اند وجود ندارد و داده‌های Mock در `localStorage` نگهداری می‌شوند. اتصال واقعی به Django/DRF مربوط به فاز دوم است.
+> Current status: **Phase 1 — Frontend Mock**. Backend integration with Django/DRF belongs to Phase 2. Mock application state is persisted in the browser with `localStorage`.
 
 ## Tech Stack
 
-- React
+- React 18
 - Vite
 - React Router
 - Vitest
-- LocalStorage Mock Persistence
-- PWA (Manifest + Service Worker)
+- LocalStorage mock persistence
+- PWA manifest and service worker
 
-## اجرا
+## Getting Started
 
-پیش‌نیاز: Node.js 18 یا جدیدتر.
+Requirements: Node.js 18 or newer.
 
 ```bash
 npm install
 npm run dev
 ```
 
-Build production:
+Production build:
 
 ```bash
 npm run build
 npm run preview
 ```
 
-اجرای تست‌ها:
+Run tests:
 
 ```bash
 npm test
 ```
 
-## حساب‌های دمو
+## Demo Accounts
 
-رمز تمام حساب‌های زیر `123456` است.
+All demo accounts use the password `123456`.
 
-| نقش | ایمیل |
+| Role | Email |
 |---|---|
-| شنونده پایه | `sara@example.com` |
-| شنونده نقره‌ای | `mina@example.com` |
-| شنونده طلایی | `gold@example.com` |
-| هنرمند تاییدشده | `nima@artist.com` |
-| پشتیبان | `support@example.com` |
-| مدیر سامانه | `admin@example.com` |
+| Basic listener | `sara@example.com` |
+| Silver listener | `mina@example.com` |
+| Gold listener | `gold@example.com` |
+| Verified artist | `nima@artist.com` |
+| Support agent | `support@example.com` |
+| System administrator | `admin@example.com` |
 
-## قابلیت‌های فاز اول
+## Phase 1 Features
 
-### احراز هویت و ثبت‌نام
-- ورود مشترک برای تمام نقش‌ها و هدایت Role-based.
-- بازیابی رمز عبور به صورت Mock.
-- ثبت‌نام شنونده با اطلاعات موردنیاز پروژه و پذیرش حریم خصوصی.
-- ثبت‌نام اختصاصی هنرمند با نمونه‌کار و وضعیت `pending`.
-- تایید یا رد هنرمند توسط پشتیبان/مدیر و اعلان نتیجه.
+### Authentication and Registration
+- Shared login flow for all four roles with role-aware routing.
+- Mock password recovery flow.
+- Listener registration with display name, email, password confirmation, birth date, gender, and privacy-policy acceptance.
+- Dedicated artist registration with stage name, portfolio information, and a pending verification state.
+- Artist approval/rejection from the support/admin dashboard with result notifications.
 
-### صفحه خانه
-- نمایش کاربر و تصویر پروفایل با fallback.
-- آخرین پلی‌لیست‌های شنیده‌شده، آلبوم‌های جدید و آهنگ‌های پرشنونده.
-- بخش Early Access برای کاربران Gold.
-- طراحی Responsive برای دسکتاپ، تبلت و موبایل.
+### Home
+- User display name and profile image with a default fallback.
+- Recently used playlists, newest albums, and popular tracks.
+- Gold-only Early Access section.
+- Responsive navigation for desktop, tablet, and mobile.
 
-### پروفایل کاربر و هنرمند
-- اطلاعات شخصی، username سیستمی، اشتراک، follower/following و آمار استریم.
-- Follow / Unfollow.
-- ویرایش پروفایل.
-- محدودیت تغییر عکس برای کاربران Basic.
-- پروفایل هنرمند شامل Bio، آثار منتشرشده و Verified Badge.
-- نمایش آمار هنرمند برای کاربران Gold.
+### User and Artist Profiles
+- Personal details, system username, profile image, subscription tier, follower/following counts, and daily stream stats.
+- Follow/unfollow behavior.
+- Editable user profile.
+- Basic-tier profile image restriction.
+- Artist biography, releases, verified badge, and Gold-only aggregate statistics.
 
-### تنظیمات
-- محدودیت اعلان‌ها.
-- صدای رابط.
-- تغییر زبان و RTL/LTR.
-- نمایش سطح اشتراک و قیمت‌های پویا.
-- حذف حساب کاربری.
-- ارسال تیکت پشتیبانی.
-- Reset داده‌های دمو.
+### Settings
+- Notification display limit.
+- UI sound volume and test tone.
+- Subscription overview with dynamic Silver/Gold pricing.
+- Mock payment handoff point for Phase 2.
+- Account deletion.
+- Support ticket submission.
+- Demo-state reset.
 
-### اعلان‌ها
-- تفکیک اعلان‌های خوانده‌شده و خوانده‌نشده.
-- Mark as Read، Delete و Read All.
-- Empty State.
-- اعلان‌های Role-based.
+### Notifications
+- Read/unread visual states.
+- Mark as read, delete, and mark-all-as-read actions.
+- Empty state.
+- Role-aware subscription, release, artist-verification, finance, and support-ticket notifications.
 
-### پلی‌لیست‌ها
-- ایجاد، حذف و تغییر نام.
-- محدودیت تعداد پلی‌لیست بر اساس اشتراک: Basic = 6، Silver = 100، Gold = نامحدود.
-- افزودن/حذف آهنگ از چند پلی‌لیست.
-- Empty State و CTA ایجاد اولین پلی‌لیست.
+### Playlists
+- Create, rename, and delete playlists.
+- Subscription limits: Basic 6, Silver 100, Gold unlimited.
+- Add/remove tracks across playlists.
+- Empty state and first-playlist call to action.
 
-### آرشیو موسیقی
-- جستجو بر اساس نام اثر یا هنرمند.
-- مرتب‌سازی بر اساس Listener Count و Release Date.
-- صفحات آلبوم و تک‌آهنگ.
-- لینک به پروفایل هنرمند و آلبوم.
-- قابلیت دانلود برای Silver/Gold.
-- Early Access برای Gold.
+### Music Library
+- Search by track, album, or artist name.
+- Sort by listener count or release date.
+- Album and track pages.
+- Navigation to artist and album pages.
+- Download access for Silver/Gold users.
+- Gold-only Early Access releases.
 
 ### Music Player
-- فایل‌های WAV محلی واقعی در `public/audio`.
-- Player ثابت در دسکتاپ و Mini Player در موبایل.
-- Play / Pause / Next / Previous.
-- Seekable Progress Bar.
-- Volume Control.
-- Repeat: off / all / one.
+- Local WAV demo audio in `public/audio`.
+- Fixed desktop player and expandable mobile mini-player.
+- Play, pause, next, previous, and seek controls.
+- Volume control.
+- Repeat off/all/one.
 - Shuffle.
-- Queue.
+- Queue management.
 - Lyrics.
-- لینک هنرمند و آلبوم.
-- آمار اختصاصی برای Gold.
-- اعمال محدودیت 60 استریم روزانه برای Basic در منطق دامنه.
+- Artist and album links.
+- Gold-only listener/stream statistics.
+- Basic-tier 60-stream daily limit in domain logic.
 
-### پنل هنرمند
-- انتشار و مدیریت آثار برای هنرمند تاییدشده.
-- ورودی MP3/WAV/FLAC.
-- Cover، Lyrics، Genre، Release Date، Collaborators و نوع انتشار.
-- ویرایش و حذف آثار.
-- آمار Listener، Stream و درآمد.
+### Artist Studio
+- Verified-artist-only publishing and release management.
+- MP3/WAV/FLAC file input.
+- Cover image, lyrics, genre, release date, collaborators, and Single/Album release type.
+- Edit and delete releases.
+- Listener, stream, and income statistics.
+- Early Access flag.
 
-### داشبورد پشتیبان و مدیر
-- دسترسی Role-based.
-- بررسی درخواست تایید هنرمندان.
-- Approve/Reject همراه دلیل.
-- مدیریت تیکت‌ها با رابط Chat-like.
-- Accounting و وضعیت تسویه هنرمندان.
-- Confirm Settlement برای Admin.
-- قیمت‌گذاری پویای Silver/Gold.
-- Pie Chart توزیع اشتراک‌ها و Revenue Widgets.
+### Support and Admin Dashboard
+- Role-based backoffice access.
+- Artist verification requests with approve/reject actions and rejection reasons.
+- Support ticket workspace with chat-style replies.
+- Monthly artist accounting and settlement state.
+- Admin-only settlement confirmation.
+- Dynamic Silver/Gold pricing.
+- Subscription distribution chart and revenue widgets.
 
-## تست و معماری
+## Testing and Maintainability
 
-- بیش از حداقل 10 تست موردنیاز فاز اول.
-- تست policy اشتراک، role access، stream limit، search/sort/repeat و storage.
-- persistence در `src/services/storage.js` از UI جدا شده است.
-- permissionها در `src/utils/permissions.js` متمرکز شده‌اند.
-- application state و عملیات اصلی در `src/store/AppContext.jsx` نگهداری می‌شوند.
-- ساختار پروژه برای جایگزینی لایه Mock با API فاز دوم طراحی شده است.
+- More than the required 10 frontend tests.
+- Tests cover subscription policies, role permissions, stream limits, search/sort/repeat behavior, and storage.
+- Domain permissions are centralized in `src/utils/permissions.js`.
+- Persistence is isolated in `src/services/storage.js`.
+- Application state and mock operations are centralized in `src/store/AppContext.jsx`.
+- The frontend is structured so Phase 2 can replace mock persistence with Django/DRF APIs without a large UI rewrite.
 
 ## PWA
 
 - `public/manifest.webmanifest`
-- آیکن‌های 192 و 512
+- 192x192 and 512x512 application icons
 - `public/service-worker.js`
-- Service Worker registration در build production
+- Service worker registration for production builds
 
-## ساختار پروژه
+## Project Structure
 
 ```text
 WP-PROJ-2026/
@@ -172,12 +170,10 @@ WP-PROJ-2026/
 └── vite.config.js
 ```
 
-## فاز دوم
+## Phase 2 Integration Notes
 
-در فاز دوم، LocalStorage و داده‌های Mock با API جنگو/DRF جایگزین می‌شوند. ساختار فعلی طوری طراحی شده که عملیات اصلی و قراردادهای UI تا حد ممکن ثابت بمانند و نیاز به refactor گسترده کاهش یابد.
-
-موارد امنیتی و سروری مانند authorization واقعی، password storage، media upload، synchronization بین دستگاه‌ها، payment gateway و aggregated reports باید در Backend پیاده‌سازی شوند.
+Phase 2 should replace LocalStorage and mock data with Django/DRF API queries and mutations while keeping the UI-facing operation contracts as stable as possible. Authentication/authorization, secure password handling, media uploads, cross-device settings synchronization, payment processing, and aggregated reports must be implemented on the backend.
 
 ## Git Workflow
 
-تغییرات بعدی پروژه در commitهای مستقل و با پیام مشخص ثبت می‌شوند تا تاریخچه توسعه قابل پیگیری باقی بماند.
+Future changes should be committed in focused commits with descriptive messages so the development history remains easy to review and suitable for team collaboration.

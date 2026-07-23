@@ -12,10 +12,10 @@ const initialForm = {
 function fileToDataUrl(file, maxBytes = 950_000) {
   return new Promise((resolve) => {
     if (!file) return resolve({ data: '', error: '' });
-    if (file.size > maxBytes) return resolve({ data: '', error: 'برای جلوگیری از پر شدن Local Storage، فایل‌های بزرگ در نسخه ماک ذخیره نمی‌شوند؛ پیش‌نمایش صوتی نمونه استفاده خواهد شد.' });
+    if (file.size > maxBytes) return resolve({ data: '', error: 'Large files are not stored in Local Storage in the mock application; a bundled demo audio preview will be used instead.' });
     const reader = new FileReader();
     reader.onload = () => resolve({ data: String(reader.result), error: '' });
-    reader.onerror = () => resolve({ data: '', error: 'خواندن فایل ناموفق بود.' });
+    reader.onerror = () => resolve({ data: '', error: 'Failed to read the file.' });
     reader.readAsDataURL(file);
   });
 }
@@ -33,7 +33,7 @@ export default function ArtistStudioPage() {
   const totalListeners = myTracks.reduce((s, t) => s + (t.listenerCount || 0), 0);
 
   if (!canUseArtistStudio(currentUser)) {
-    return <EmptyState icon="⌛" title="حساب هنرمند در انتظار تأیید است" text="پس از تایید پشتیبان یا مدیر، پنل مدیریت آثار برای شما فعال می‌شود. نتیجه بررسی از طریق اعلان‌ها قابل مشاهده است." />;
+    return <EmptyState icon="⌛" title="Artist account is pending approval" text="Artist Studio becomes available after approval by support or the administrator. The review result will appear in Notifications." />;
   }
 
   const submit = async (e) => {
@@ -50,10 +50,10 @@ export default function ArtistStudioPage() {
     if (!file) return;
     const allowed = ['audio/mpeg', 'audio/wav', 'audio/x-wav', 'audio/flac', 'audio/x-flac'];
     const extOk = /\.(mp3|wav|flac)$/i.test(file.name);
-    if (!allowed.includes(file.type) && !extOk) return setFileNote('فرمت مجاز: MP3 / WAV / FLAC');
+    if (!allowed.includes(file.type) && !extOk) return setFileNote('Allowed formats: MP3 / WAV / FLAC');
     const { data, error } = await fileToDataUrl(file);
     setForm((v) => ({ ...v, audio: data || '/audio/track1.wav' }));
-    setFileNote(error || `فایل صوتی «${file.name}» برای نسخه ماک آماده شد.`);
+    setFileNote(error || `Audio file “${file.name}” is ready for the mock application.`);
   };
 
   const handleCover = async (file) => {
@@ -64,38 +64,38 @@ export default function ArtistStudioPage() {
 
   return (
     <div className="page-stack">
-      <div className="page-title"><div><span className="eyebrow">پنل هنرمند تاییدشده</span><h1>مدیریت آثار</h1><p>انتشار، ویرایش، حذف و مشاهده آمار آثار شما.</p></div></div>
+      <div className="page-title"><div><span className="eyebrow">Verified Artist</span><h1>Artist Studio</h1><p>Publish, edit, delete, and review statistics for your releases.</p></div></div>
 
       <div className="stat-grid three premium-stats">
-        <div className="stat-card"><span>شنوندگان آثار</span><strong>{totalListeners.toLocaleString('fa-IR')}</strong></div>
-        <div className="stat-card"><span>استریم‌ها</span><strong>{totalStreams.toLocaleString('fa-IR')}</strong></div>
-        <div className="stat-card"><span>درآمد آثار</span><strong>{formatMoney(totalIncome)} <small>تومان</small></strong></div>
+        <div className="stat-card"><span>Release listeners</span><strong>{totalListeners.toLocaleString('en-US')}</strong></div>
+        <div className="stat-card"><span>Streams</span><strong>{totalStreams.toLocaleString('en-US')}</strong></div>
+        <div className="stat-card"><span>Release revenue</span><strong>{formatMoney(totalIncome)} <small>IRR</small></strong></div>
       </div>
 
       <section className="panel-card">
-        <div className="section-head"><div><h2>انتشار اثر جدید</h2><p>اطلاعات متا، رسانه و نوع انتشار را مشخص کنید.</p></div></div>
+        <div className="section-head"><div><h2>Publish a new release</h2><p>Provide metadata, media, and the release type.</p></div></div>
         <form className="form-stack" onSubmit={submit}>
-          <div className="form-two"><label>نام اثر<input required value={form.title} onChange={(e) => setForm((v) => ({ ...v, title: e.target.value }))} /></label><label>نوع انتشار<select value={form.releaseType} onChange={(e) => setForm((v) => ({ ...v, releaseType: e.target.value, albumId: '' }))}><option value="single">تک‌آهنگ</option><option value="album">عضو آلبوم</option></select></label></div>
+          <div className="form-two"><label>Title<input required value={form.title} onChange={(e) => setForm((v) => ({ ...v, title: e.target.value }))} /></label><label>Release type<select value={form.releaseType} onChange={(e) => setForm((v) => ({ ...v, releaseType: e.target.value, albumId: '' }))}><option value="single">Single</option><option value="album">Album track</option></select></label></div>
 
-          {form.releaseType === 'album' && <div className="form-two"><label>آلبوم موجود<select value={form.albumId} onChange={(e) => setForm((v) => ({ ...v, albumId: e.target.value }))}><option value="">ساخت آلبوم جدید</option>{myAlbums.map((a) => <option key={a.id} value={a.id}>{a.title}</option>)}</select></label>{!form.albumId && <label>نام آلبوم جدید<input required value={form.albumTitle} onChange={(e) => setForm((v) => ({ ...v, albumTitle: e.target.value }))} /></label>}</div>}
+          {form.releaseType === 'album' && <div className="form-two"><label>Existing album<select value={form.albumId} onChange={(e) => setForm((v) => ({ ...v, albumId: e.target.value }))}><option value="">Create a new album</option>{myAlbums.map((a) => <option key={a.id} value={a.id}>{a.title}</option>)}</select></label>{!form.albumId && <label>New album title<input required value={form.albumTitle} onChange={(e) => setForm((v) => ({ ...v, albumTitle: e.target.value }))} /></label>}</div>}
 
-          <div className="form-two"><label>ژانر<input placeholder="Electronic / Indie / ..." value={form.genre} onChange={(e) => setForm((v) => ({ ...v, genre: e.target.value }))} /></label><label>تاریخ/سال انتشار<input type="date" value={form.releaseDate} onChange={(e) => setForm((v) => ({ ...v, releaseDate: e.target.value }))} /></label></div>
+          <div className="form-two"><label>Genre<input placeholder="Electronic / Indie / ..." value={form.genre} onChange={(e) => setForm((v) => ({ ...v, genre: e.target.value }))} /></label><label>Release date<input type="date" value={form.releaseDate} onChange={(e) => setForm((v) => ({ ...v, releaseDate: e.target.value }))} /></label></div>
 
-          <label>هنرمندان همکار<select multiple value={form.collaboratorIds} onChange={(e) => setForm((v) => ({ ...v, collaboratorIds: Array.from(e.target.selectedOptions).map((o) => o.value) }))}>{collaborators.map((a) => <option key={a.id} value={a.id}>{a.stageName || a.displayName}</option>)}</select><small>برای انتخاب چند مورد Ctrl/Cmd را نگه دارید.</small></label>
-          <label>متن آهنگ<textarea rows="5" value={form.lyrics} onChange={(e) => setForm((v) => ({ ...v, lyrics: e.target.value }))} placeholder="در صورت وجود، متن آهنگ را وارد کنید…" /></label>
-          <div className="form-two"><label>فایل صوتی (MP3 / WAV / FLAC)<input type="file" accept="audio/*,.mp3,.wav,.flac" onChange={(e) => handleAudio(e.target.files?.[0])} /></label><label>تصویر کاور<input type="file" accept="image/*" onChange={(e) => handleCover(e.target.files?.[0])} /></label></div>
+          <label>Collaborating artists<select multiple value={form.collaboratorIds} onChange={(e) => setForm((v) => ({ ...v, collaboratorIds: Array.from(e.target.selectedOptions).map((o) => o.value) }))}>{collaborators.map((a) => <option key={a.id} value={a.id}>{a.stageName || a.displayName}</option>)}</select><small>Hold Ctrl/Cmd to select multiple artists.</small></label>
+          <label>Lyrics<textarea rows="5" value={form.lyrics} onChange={(e) => setForm((v) => ({ ...v, lyrics: e.target.value }))} placeholder="Enter lyrics when available…" /></label>
+          <div className="form-two"><label>Audio file (MP3 / WAV / FLAC)<input type="file" accept="audio/*,.mp3,.wav,.flac" onChange={(e) => handleAudio(e.target.files?.[0])} /></label><label>Cover image<input type="file" accept="image/*" onChange={(e) => handleCover(e.target.files?.[0])} /></label></div>
           {fileNote && <p className="info-note">{fileNote}</p>}
-          <label className="checkbox-line"><input type="checkbox" checked={form.earlyAccess} onChange={(e) => setForm((v) => ({ ...v, earlyAccess: e.target.checked }))} /><span>انتشار به صورت دسترسی زودهنگام برای کاربران طلایی</span></label>
-          <button className="primary-button" disabled={publishing}>{publishing ? 'در حال انتشار…' : 'انتشار در نسخه ماک'}</button>
+          <label className="checkbox-line"><input type="checkbox" checked={form.earlyAccess} onChange={(e) => setForm((v) => ({ ...v, earlyAccess: e.target.checked }))} /><span>Publish as Early Access for Gold users</span></label>
+          <button className="primary-button" disabled={publishing}>{publishing ? 'Publishing…' : 'Publish to mock catalog'}</button>
         </form>
       </section>
 
       <section className="panel-card">
-        <div className="section-head"><div><h2>آثار منتشرشده</h2><p>{myTracks.length.toLocaleString('fa-IR')} اثر</p></div></div>
-        {myTracks.length ? <div className="responsive-table"><table><thead><tr><th>اثر</th><th>نوع/آلبوم</th><th>ژانر</th><th>انتشار</th><th>شنونده</th><th>استریم</th><th>درآمد</th><th>عملیات</th></tr></thead><tbody>{myTracks.map((t) => {
+        <div className="section-head"><div><h2>Published releases</h2><p>{myTracks.length.toLocaleString('en-US')} releases</p></div></div>
+        {myTracks.length ? <div className="responsive-table"><table><thead><tr><th>Release</th><th>Type / Album</th><th>Genre</th><th>Release date</th><th>Listeners</th><th>Streams</th><th>Revenue</th><th>Actions</th></tr></thead><tbody>{myTracks.map((t) => {
           const album = albums.find((a) => a.id === t.albumId);
-          return <tr key={t.id}><td><div className="table-media"><img src={t.cover} alt="" /><strong>{t.title}</strong></div></td><td>{album?.title || 'تک‌آهنگ'}</td><td>{t.genre}</td><td>{formatDate(t.releaseDate)}</td><td>{t.listenerCount.toLocaleString('fa-IR')}</td><td>{t.streamCount.toLocaleString('fa-IR')}</td><td>{formatMoney(t.income)} تومان</td><td><div className="button-row nowrap"><button className="secondary-button small" onClick={() => { const title = window.prompt('نام جدید اثر:', t.title); if (title?.trim()) updateTrack(t.id, { title: title.trim() }); }}>ویرایش</button><button className="danger-button small" onClick={() => window.confirm(`اثر «${t.title}» حذف شود؟`) && deleteTrack(t.id)}>حذف</button></div></td></tr>;
-        })}</tbody></table></div> : <EmptyState title="اثری منتشر نشده" text="فرم بالا را تکمیل کنید تا اولین اثر در داده‌های ماک ساخته شود." />}
+          return <tr key={t.id}><td><div className="table-media"><img src={t.cover} alt="" /><strong>{t.title}</strong></div></td><td>{album?.title || 'Single'}</td><td>{t.genre}</td><td>{formatDate(t.releaseDate)}</td><td>{t.listenerCount.toLocaleString('en-US')}</td><td>{t.streamCount.toLocaleString('en-US')}</td><td>{formatMoney(t.income)} IRR</td><td><div className="button-row nowrap"><button className="secondary-button small" onClick={() => { const title = window.prompt('New release title:', t.title); if (title?.trim()) updateTrack(t.id, { title: title.trim() }); }}>Edit</button><button className="danger-button small" onClick={() => window.confirm(`Delete release “${t.title}”?`) && deleteTrack(t.id)}>Delete</button></div></td></tr>;
+        })}</tbody></table></div> : <EmptyState title="No releases yet" text="Complete the form above to publish the first mock release." />}
       </section>
     </div>
   );
