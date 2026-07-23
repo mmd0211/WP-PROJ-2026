@@ -1,0 +1,42 @@
+import React, { useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { useApp } from '../store/AppContext';
+import { AlbumCard, TrackCard } from '../components/MediaCards';
+import { filterCatalog, sortCatalog } from '../utils/domain';
+
+export default function LibraryPage() {
+  const { tracks, albums, users } = useApp();
+  const [params, setParams] = useSearchParams();
+  const [query, setQuery] = useState(params.get('q') || '');
+  const [sort, setSort] = useState('listeners');
+  const [type, setType] = useState('all');
+  const artistNameFor = (id) => users.find((u) => u.id === id)?.stageName || users.find((u) => u.id === id)?.displayName || '';
+
+  const filteredTracks = useMemo(() => sortCatalog(filterCatalog(tracks, query, artistNameFor), sort), [tracks, query, sort, users]);
+  const filteredAlbums = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    const list = albums.filter((a) => !q || `${a.title} ${artistNameFor(a.artistId)}`.toLowerCase().includes(q));
+    return sortCatalog(list, sort);
+  }, [albums, query, sort, users]);
+
+  const submit = (e) => {
+    e.preventDefault();
+    const next = new URLSearchParams(params);
+    query ? next.set('q', query) : next.delete('q');
+    setParams(next);
+  };
+
+  return (
+    <div className="page-stack">
+      <div className="page-title"><div><span className="eyebrow">آرشیو موسیقی</span><h1>آلبوم‌ها و تک‌آهنگ‌ها</h1><p>همزمان بر اساس نام اثر یا هنرمند جستجو کنید.</p></div></div>
+      <form className="catalog-toolbar" onSubmit={submit}>
+        <label className="search-box"><span>⌕</span><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="نام اثر یا هنرمند…" /></label>
+        <select value={sort} onChange={(e) => setSort(e.target.value)} aria-label="مرتب‌سازی"><option value="listeners">بیشترین شنونده</option><option value="date">جدیدترین انتشار</option></select>
+        <div className="segmented"><button type="button" className={type === 'all' ? 'active' : ''} onClick={() => setType('all')}>همه</button><button type="button" className={type === 'album' ? 'active' : ''} onClick={() => setType('album')}>آلبوم</button><button type="button" className={type === 'track' ? 'active' : ''} onClick={() => setType('track')}>آهنگ</button></div>
+      </form>
+
+      {(type === 'all' || type === 'album') && <section className="section-block"><div className="section-head"><h2>آلبوم‌ها</h2><span>{filteredAlbums.length.toLocaleString('fa-IR')} نتیجه</span></div><div className="album-grid">{filteredAlbums.map((album) => <AlbumCard key={album.id} album={album} />)}</div></section>}
+      {(type === 'all' || type === 'track') && <section className="section-block"><div className="section-head"><h2>تک‌آهنگ‌ها و ترک‌ها</h2><span>{filteredTracks.length.toLocaleString('fa-IR')} نتیجه</span></div><div className="track-list">{filteredTracks.map((track) => <TrackCard key={track.id} track={track} queueIds={filteredTracks.map((t) => t.id)} />)}</div></section>}
+    </div>
+  );
+}

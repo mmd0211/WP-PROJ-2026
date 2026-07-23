@@ -1,0 +1,18 @@
+{
+  "name": "Spotune Music",
+  "short_name": "Spotune",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b1020",
+  "theme_color": "#111827",
+  "lang": "fa",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "/covers/app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
