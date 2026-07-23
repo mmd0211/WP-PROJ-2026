@@ -10,14 +10,21 @@ export default function LocalizationBridge() {
 
   useEffect(() => {
     const direction = getTextDirection(language);
-    document.documentElement.lang = language;
-    document.documentElement.dir = direction;
-    document.body.dataset.language = language;
-    document.title = language === 'fa' ? 'Spotune | پخش موسیقی' : 'Spotune | Music streaming';
+    const applyDocumentLocale = () => {
+      document.documentElement.lang = language;
+      document.documentElement.dir = direction;
+      document.body.dataset.language = language;
+      document.title = language === 'fa' ? 'Spotune | پخش موسیقی' : 'Spotune | Music streaming';
+    };
+
+    applyDocumentLocale();
 
     let frameId = null;
     const applyLocalization = () => {
       frameId = null;
+      // AppContext historically set a fixed LTR locale on mount. Re-assert the
+      // selected locale here so the user setting is always authoritative.
+      applyDocumentLocale();
       localizeDocument(language, document.body);
       localizeExtraDocument(language, document.body);
       localizeFragments(language, document.body);
