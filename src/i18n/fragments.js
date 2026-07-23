@@ -13,8 +13,12 @@ const EN_TO_FA = {
   'Plan:': 'اشتراک:',
   'Current plan:': 'اشتراک فعلی:',
   'Ticket': 'تیکت',
+  'Ticket #': 'تیکت شماره ',
   'user': 'کاربر',
   'users': 'کاربر',
+  'Basic:': 'پایه:',
+  'Silver:': 'نقره‌ای:',
+  'Gold:': 'طلایی:',
   'Single': 'تک‌آهنگ',
   'Other': 'سایر',
   'pending': 'در انتظار',
@@ -24,6 +28,7 @@ const EN_TO_FA = {
   'open': 'باز',
   'answered': 'پاسخ داده‌شده',
   'closed': 'بسته',
+  'IRR': 'ریال',
 };
 
 const FA_TO_EN = Object.fromEntries(Object.entries(EN_TO_FA).map(([en, fa]) => [fa, en]));
