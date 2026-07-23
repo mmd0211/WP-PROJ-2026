@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" dir="ltr">
+<html lang="fa" dir="rtl">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,6 +7,18 @@
     <meta name="description" content="Spotune - mock music streaming frontend" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <title>Spotune | Music Streaming</title>
+    <script>
+      try {
+        const state = JSON.parse(localStorage.getItem('spotune.phase1.state.v1') || 'null');
+        const userId = state?.currentUserId;
+        const language = state?.settingsByUser?.[userId]?.language === 'en' ? 'en' : 'fa';
+        document.documentElement.lang = language;
+        document.documentElement.dir = language === 'fa' ? 'rtl' : 'ltr';
+      } catch {
+        document.documentElement.lang = 'fa';
+        document.documentElement.dir = 'rtl';
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
