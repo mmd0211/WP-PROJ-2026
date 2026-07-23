@@ -93,12 +93,12 @@ export default function MusicPlayer() {
         </div>
 
         <div className="player-center">
-          <div className="player-controls">
-            <button className={player.shuffle ? 'active-control' : ''} onClick={() => setPlayerState({ shuffle: !player.shuffle })} title="Shuffle">⤨</button>
-            <button onClick={() => move(-1)} title="Previous">⏮</button>
-            <button className="play-main" onClick={() => setPlayerState({ isPlaying: !player.isPlaying })} title={player.isPlaying ? 'Pause' : 'Play'}>{player.isPlaying ? '❚❚' : '▶'}</button>
-            <button onClick={() => move(1)} title="Next">⏭</button>
-            <button className={player.repeat !== 'off' ? 'active-control' : ''} onClick={() => setPlayerState({ repeat: nextRepeatMode(player.repeat) })} title={`Repeat: ${player.repeat}`}>{player.repeat === 'one' ? '↻¹' : '↻'}</button>
+          <div className="player-controls" dir="ltr">
+            <button className={player.shuffle ? 'active-control' : ''} onClick={() => setPlayerState({ shuffle: !player.shuffle })} title="Shuffle" aria-label="Shuffle">⤨</button>
+            <button onClick={() => move(-1)} title="Previous" aria-label="Previous">⏮</button>
+            <button className="play-main" onClick={() => setPlayerState({ isPlaying: !player.isPlaying })} title={player.isPlaying ? 'Pause' : 'Play'} aria-label={player.isPlaying ? 'Pause' : 'Play'}>{player.isPlaying ? '❚❚' : '▶'}</button>
+            <button onClick={() => move(1)} title="Next" aria-label="Next">⏭</button>
+            <button className={player.repeat !== 'off' ? 'active-control' : ''} onClick={() => setPlayerState({ repeat: nextRepeatMode(player.repeat) })} title={`Repeat: ${player.repeat}`} aria-label={`Repeat: ${player.repeat}`}>{player.repeat === 'one' ? '↻¹' : '↻'}</button>
           </div>
           <div className="progress-row">
             <span>{seconds(currentTime)}</span>
@@ -121,8 +121,8 @@ export default function MusicPlayer() {
 
         <div className="player-extra">
           {showStats && <span className="player-stats">{track.listenerCount.toLocaleString('en-US')} listeners · {track.streamCount.toLocaleString('en-US')} streams</span>}
-          <button onClick={() => setLyricsOpen((v) => !v)} title="Lyrics">♫</button>
-          <button onClick={() => setQueueOpen((v) => !v)} title="Queue">☷</button>
+          <button onClick={() => setLyricsOpen((v) => !v)} title="Lyrics" aria-label="Lyrics">♫</button>
+          <button onClick={() => setQueueOpen((v) => !v)} title="Queue" aria-label="Queue">☷</button>
           <span>🔊</span>
           <input aria-label="Volume control" className="volume-slider" type="range" min="0" max="1" step="0.01" value={volume} onChange={(e) => setVolume(Number(e.target.value))} />
         </div>
