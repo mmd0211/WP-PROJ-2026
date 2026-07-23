@@ -35,6 +35,12 @@ export default function SettingsPage() {
     navigate('/auth');
   };
 
+  const changeLanguage = (language) => {
+    document.documentElement.lang = language;
+    document.documentElement.dir = language === 'fa' ? 'rtl' : 'ltr';
+    updateSettings({ language });
+  };
+
   return (
     <div className="page-stack settings-page">
       <div className="page-title"><div><span className="eyebrow">Preferences</span><h1>Application Settings</h1><p>Phase 1 settings are stored in Local Storage.</p></div></div>
@@ -52,8 +58,8 @@ export default function SettingsPage() {
       <section className="panel-card settings-section">
         <div><h2>Interface Language</h2><p>Switch the entire interface language and text direction.</p></div>
         <div className="segmented language-segmented" dir="ltr">
-          <button className={settings.language === 'fa' ? 'active' : ''} onClick={() => updateSettings({ language: 'fa' })}>Persian</button>
-          <button className={settings.language === 'en' ? 'active' : ''} onClick={() => updateSettings({ language: 'en' })}>English</button>
+          <button className={settings.language === 'fa' ? 'active' : ''} onClick={() => changeLanguage('fa')}>Persian</button>
+          <button className={settings.language === 'en' ? 'active' : ''} onClick={() => changeLanguage('en')}>English</button>
         </div>
       </section>
 
