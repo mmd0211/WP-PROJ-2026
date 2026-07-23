@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useApp } from '../store/AppContext';
 import { getTextDirection, localizeDocument, translateText } from '../i18n';
+import { localizeExtraDocument, translateExtraText } from '../i18n/extra';
 
 export default function LocalizationBridge() {
   const { settings } = useApp();
@@ -13,15 +14,15 @@ export default function LocalizationBridge() {
     document.body.dataset.language = language;
     document.title = language === 'fa' ? 'Spotune | پخش موسیقی' : 'Spotune | Music streaming';
 
-    let scheduled = false;
+    let frameId = null;
     const applyLocalization = () => {
-      scheduled = false;
+      frameId = null;
       localizeDocument(language, document.body);
+      localizeExtraDocument(language, document.body);
     };
     const scheduleLocalization = () => {
-      if (scheduled) return;
-      scheduled = true;
-      window.requestAnimationFrame(applyLocalization);
+      if (frameId !== null) return;
+      frameId = window.requestAnimationFrame(applyLocalization);
     };
 
     scheduleLocalization();
@@ -34,16 +35,17 @@ export default function LocalizationBridge() {
       attributeFilter: ['placeholder', 'title', 'aria-label', 'alt'],
     });
 
+    const localizeMessage = (message) => translateExtraText(translateText(String(message), language), language);
     const nativeAlert = window.alert.bind(window);
     const nativeConfirm = window.confirm.bind(window);
     const nativePrompt = window.prompt.bind(window);
-    window.alert = (message) => nativeAlert(translateText(String(message), language));
-    window.confirm = (message) => nativeConfirm(translateText(String(message), language));
-    window.prompt = (message, defaultValue) => nativePrompt(translateText(String(message), language), defaultValue);
+    window.alert = (message) => nativeAlert(localizeMessage(message));
+    window.confirm = (message) => nativeConfirm(localizeMessage(message));
+    window.prompt = (message, defaultValue) => nativePrompt(localizeMessage(message), defaultValue);
 
     return () => {
       observer.disconnect();
-      window.cancelAnimationFrame?.(0);
+      if (frameId !== null) window.cancelAnimationFrame(frameId);
       window.alert = nativeAlert;
       window.confirm = nativeConfirm;
       window.prompt = nativePrompt;
